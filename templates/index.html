@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Portfolio
+{% endblock %}
+
+{% block main %}
+    <table class="table table-striped">
+    <thead>
+        {#
+            Labels the columns of table
+        #}
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Location
+            </th>
+            <th>
+                Rating (Year)
+            </th>
+            <th>
+                Rating (Month)
+            </th>
+            <th>
+                Last Rated
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for location in latest %}
+        {#
+            Iterates through rows of table
+        #}
+            <tr>
+                {#
+                Fill in table with relevant holdings information
+                #}
+                <td>
+                    {{ location["name"] }}
+                </td>
+
+                <td>
+                    {{ location["address"] }}
+                </td>
+
+                <td>
+                    {{ location["rating_y"] }}
+                </td>
+
+                <td>
+                    {{ location["rating_m"] }}
+                </td>
+
+                <td>
+                    {{ location["datetime"] }}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

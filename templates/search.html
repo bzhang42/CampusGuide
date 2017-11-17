@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Search
+{% endblock %}
+
+{% block main %}
+    {#
+        Allows user to input location for lookup
+    #}
+    <form action="/search" method="post">
+        <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control" name="location" placeholder="Location" type="text"/>
+        </div>
+        <button class="btn btn-primary" type="submit">Find Location</button>
+    </form>
+{% endblock %}
