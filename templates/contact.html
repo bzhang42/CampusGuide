@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Contact Us
+{% endblock %}
+
+{% block main %}
+    {#
+        Allows user to submit recommendations for what should be rated
+    #}
+    <form action="/search" method="post">
+        <div class="form-group" contenteditable>
+            <input autocomplete="off" autofocus class="form-control" name="suggestion" placeholder="Recommendation" type="text"/>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+{% endblock %}

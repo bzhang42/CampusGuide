@@ -57,18 +57,18 @@ ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 @login_required
 def index():
     """Shows latest location ratings and generates random location"""
+    return apology("hi")
+    # # Pulls out latest 5 entries from ratings table
+    # latest = db.execute("SELECT * FROM (SELECT * FROM ratings ORDER BY datetime DESC LIMIT 0,5) ORDER BY datetime DESC")
 
-    # Pulls out latest 5 entries from ratings table
-    latest = db.execute("SELECT * FROM (SELECT * FROM ratings ORDER BY datetime DESC LIMIT 0,5) ORDER BY datetime DESC")
+    # numLocations = db.execute("SELECT Count(*) FROM locations")
 
-    numLocations = db.execute("SELECT Count(*) FROM locations")
+    # r_num = random.randint(0, 100)
 
-    r_num = random.randint(0, 100)
+    # r_location = db.execute("SELECT * FROM locations WHERE id = :r_num", r_num=r_num)
 
-    r_location = db.execute("SELECT * FROM locations WHERE id = :r_num", r_num=r_num)
-
-    # renders index.html page with correctly formatted values
-    return render_template("index.html", latest=latest, r_location=r_location)
+    # # renders index.html page with correctly formatted values
+    # return render_template("index.html", latest=latest, r_location=r_location)
 
 
 @app.route("/login", methods=["GET", "POST"])
