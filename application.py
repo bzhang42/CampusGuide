@@ -5,9 +5,8 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, login_required, lookup, usd
+from helpers import apology, login_required, check_confirmed, lookup, usd
 from itsdangerous import URLSafeTimedSerializer
-from functools import wraps
 
 # Configure application
 app = Flask(__name__)
@@ -31,8 +30,8 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 
-app.config.update(SECRET_KEY='thiiscs50505050',
-                  SECURITY_PASSWORD_SALT='toomuchtimespentonthisreaccs')
+app.config.update(SECRET_KEY='CampusGuide',
+                  SECURITY_PASSWORD_SALT='danielandbillogsquadup')
 
 mail = Mail(app)
 
@@ -56,6 +55,7 @@ ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
 @app.route("/")
 @login_required
+@check_confirmed
 def index():
     """Shows latest location ratings and generates random location"""
     return apology("hi")
@@ -100,9 +100,13 @@ def login():
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
+        session["status"] = db.execute(
+            "SELECT confirmed FROM users WHERE id = :user_id", user_id=session["user_id"])[0]["confirmed"]
 
-        # Redirect user to home page
-        return redirect("/")
+        if session["status"] == 0:
+            return render_template("unconfirmed.html")
+        else:
+            return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -173,12 +177,27 @@ def register():
         p_hash = generate_password_hash(password)
 
         # Put username and password information into database
-        db.execute("INSERT INTO users (username, hash, email) VALUES (:username, :p_hash, :email)",
+        result = db.execute("INSERT INTO users (username, hash, email) VALUES (:username, :p_hash, :email)",
                    username=username, p_hash=str(p_hash), email=email)
+
+        session["user_id"] = result
 
         flash("Registered!")
 
-        return redirect("/")
+        session["status"] = db.execute("SELECT confirmed FROM users WHERE id = :user_id",
+                                            user_id=session["user_id"])[0]["confirmed"]
+
+        subject = "Please confirm your Harvard CampusGuide email"
+
+        token = ts.dumps(email, salt='danielandbillogsquadup')
+        confirm_url = url_for('confirm_email', token=token, _external=True)
+        html = render_template("email.html", confirm_url=confirm_url)
+
+        send_email(email, subject, html)
+
+        flash('A confirmation email has been sent via email.', 'success')
+
+        return redirect("/unconfirmed")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -187,6 +206,7 @@ def register():
 
 @app.route("/change-password", methods=["GET", "POST"])
 @login_required
+@check_confirmed
 def change_password():
     """Change user password"""
 
@@ -242,6 +262,73 @@ def change_password():
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("change_password.html")
+
+
+@app.route("/unconfirmed")
+@login_required
+def unconfirmed():
+    if session["status"] == 1:
+        return redirect("/")
+    else:
+        flash('Please confirm your account!', 'warning')
+        return render_template("unconfirmed.html")
+
+
+@app.route("/confirm/<token>")
+@login_required
+def confirm_email(token):
+    user_id = session["user_id"]
+    try:
+        email = ts.loads(token, salt='danielandbillogsquadup', max_age=86400)
+    except:
+        return apology("Confirmation link too old!")
+
+    status = db.execute("SELECT confirmed FROM users WHERE id = :user_id",
+                        user_id=user_id)[0]["confirmed"]
+    if status == 1:
+        flash('Account already confirmed. Please log in.', 'success')
+    else:
+        db.execute("UPDATE users SET confirmed = 1 WHERE id = :user_id",
+                   user_id=user_id)
+        session["status"] = 1
+        flash('You have confirmed your account. Thanks!', 'success')
+    return redirect('/')
+
+
+@app.route('/resend')
+@login_required
+def resend_confirmation():
+    # Resends email
+
+    # Gets email
+    email = db.execute("SELECT email FROM users WHERE id = :user_id",
+                       user_id=session["user_id"])[0]["email"]
+
+    # Subject
+    subject = "Harvard Campus Guide Confirmation"
+
+    # Unique token
+    token = ts.dumps(email, salt='danielandbillogsquadup')
+    # Creates url
+    confirm_url = url_for('confirm_email', token=token, _external=True)
+    # Html formatting
+    html = render_template("email.html", confirm_url=confirm_url)
+
+    # Sends email
+    send_email(email, subject, html)
+
+    # Alerts email sent
+    flash('A new confirmation email has been sent!', 'success')
+
+    # Redirects to unconfirmed page
+    return redirect("/unconfirmed")
+
+
+def send_email(recipient, subject, html):
+    msg = Message(subject,
+                  recipients=[recipient],
+                  html=html)
+    mail.send(msg)
 
 
 @app.route("/contact-us",methods=["GET","POST"])

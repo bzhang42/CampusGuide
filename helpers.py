@@ -1,3 +1,4 @@
+from cs50 import SQL
 import csv
 import urllib.request
 
