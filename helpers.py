@@ -1,8 +1,11 @@
 import csv
 import urllib.request
 
-from flask import redirect, render_template, request, session
+from flask import redirect, render_template, request, session, flash
 from functools import wraps
+
+# Configure CS50 Library to use SQLite database
+db = SQL("sqlite:///campusguide.db")
 
 
 def apology(message, code=400):
@@ -30,6 +33,17 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         if session.get("user_id") is None:
             return redirect("/login")
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+def check_confirmed(f):
+    "hi"
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if db.execute("SELECT confirmed FROM users WHERE :user_id", user_id = session.get("user_id"))[0]['confirmed'] == 0:
+            flash("Please confirm your account!", "warning")
+            return redirect("/unconfirmed")
         return f(*args, **kwargs)
     return decorated_function
 
