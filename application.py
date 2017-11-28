@@ -7,6 +7,7 @@ from werkzeug.exceptions import default_exceptions
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required, lookup, usd
 from itsdangerous import URLSafeTimedSerializer
+from functools import wraps
 
 # Configure application
 app = Flask(__name__)
@@ -152,6 +153,9 @@ def register():
         elif not request.form.get("email"):
             return apology("must provide email", 400)
 
+        elif request.form.get("email")[-20:] != "@college.harvard.edu":
+            return apology("please enter a valid @college.harvard.edu email")
+
         # Ensure password and confirmation match
         elif request.form.get("password") != request.form.get("confirmation"):
             return apology("password and confirmation must match", 400)
@@ -243,14 +247,19 @@ def change_password():
 @app.route("/contact-us",methods=["GET","POST"])
 def contact():
 
+    name = request.form.get("name")
     suggestion = request.form.get("suggestion")
+    picture = request.form.get("picture")
 
     if request.method == "POST":
         if suggestion == None or len(suggestion) == 0:
             flash("I'm sorry, there was a mistake processing your suggestion!")
             return render_template("/contact.html")
         else:
-            db.execute("INSERT INTO suggestions (suggestion, user_id) VALUES (:suggestion, :user_id)", suggestion = suggestion, user_id = session["user_id"])
+            if not session["user_id"]:
+                db.execute("INSERT INTO suggestions (name, suggestion, picture) VALUES (:name, :suggestion, :picture)", suggestion = suggestion, name = name, picture = picture)
+            else:
+                db.execute("INSERT INTO suggestions (user_id, name, suggestion, picture) VALUES (:user_id, :name, :suggestion, :picture)", user_id = session["user_id"], name = name, suggestion = suggestion, picture = picture)
             flash("Submitted suggestion!")
             return redirect("/")
 
