@@ -58,7 +58,7 @@ ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 @check_confirmed
 def index():
     """Shows latest location ratings and generates random location"""
-    return apology("hi")
+    return render_template("location.html")
     # # Pulls out latest 5 entries from ratings table
     # latest = db.execute("SELECT * FROM (SELECT * FROM ratings ORDER BY datetime DESC LIMIT 0,5) ORDER BY datetime DESC")
 
@@ -237,7 +237,7 @@ def change_password():
             return apology("password and confirmation must match", 400)
 
         # Ensures new password is different
-        if password == request.form.get("current_password"):
+        if request.form.get("new_password") == request.form.get("current_password"):
             return apology("new password must be different", 400)
 
         # Stores new password
