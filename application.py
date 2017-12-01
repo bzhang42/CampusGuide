@@ -55,9 +55,10 @@ ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
 @app.route("/")
 @login_required
+@check_confirmed
 def index():
-    # """Shows latest location ratings and generates random location"""
-
+    """Shows latest location ratings and generates random location"""
+    return render_template("location.html")
     # # Pulls out latest 5 entries from ratings table
     # latest = db.execute("SELECT * FROM (SELECT * FROM ratings ORDER BY datetime DESC LIMIT 0,5) ORDER BY datetime DESC")
 
@@ -69,7 +70,6 @@ def index():
 
     # # renders index.html page with correctly formatted values
     # return render_template("index.html", latest=latest, r_location=r_location)
-    return redirect("/")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -122,6 +122,12 @@ def logout():
 
     # Redirect user to login form
     return redirect("/")
+
+
+@app.route("/rate")
+def rate():
+    """User rates a random location"""
+    return render_template("rate.html")
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -237,7 +243,7 @@ def change_password():
             return apology("password and confirmation must match", 400)
 
         # Ensures new password is different
-        if password == request.form.get("current_password"):
+        if request.form.get("new_password") == request.form.get("current_password"):
             return apology("new password must be different", 400)
 
         # Stores new password
@@ -262,6 +268,73 @@ def change_password():
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("change_password.html")
+
+
+@app.route("/unconfirmed")
+@login_required
+def unconfirmed():
+    if session["status"] == 1:
+        return redirect("/")
+    else:
+        flash('Please confirm your account!', 'warning')
+        return render_template("unconfirmed.html")
+
+
+@app.route("/confirm/<token>")
+@login_required
+def confirm_email(token):
+    user_id = session["user_id"]
+    try:
+        email = ts.loads(token, salt='danielandbillogsquadup', max_age=86400)
+    except:
+        return apology("Confirmation link too old!")
+
+    status = db.execute("SELECT confirmed FROM users WHERE id = :user_id",
+                        user_id=user_id)[0]["confirmed"]
+    if status == 1:
+        flash('Account already confirmed. Please log in.', 'success')
+    else:
+        db.execute("UPDATE users SET confirmed = 1 WHERE id = :user_id",
+                   user_id=user_id)
+        session["status"] = 1
+        flash('You have confirmed your account. Thanks!', 'success')
+    return redirect('/')
+
+
+@app.route('/resend')
+@login_required
+def resend_confirmation():
+    # Resends email
+
+    # Gets email
+    email = db.execute("SELECT email FROM users WHERE id = :user_id",
+                       user_id=session["user_id"])[0]["email"]
+
+    # Subject
+    subject = "Harvard Campus Guide Confirmation"
+
+    # Unique token
+    token = ts.dumps(email, salt='danielandbillogsquadup')
+    # Creates url
+    confirm_url = url_for('confirm_email', token=token, _external=True)
+    # Html formatting
+    html = render_template("email.html", confirm_url=confirm_url)
+
+    # Sends email
+    send_email(email, subject, html)
+
+    # Alerts email sent
+    flash('A new confirmation email has been sent!', 'success')
+
+    # Redirects to unconfirmed page
+    return redirect("/unconfirmed")
+
+
+def send_email(recipient, subject, html):
+    msg = Message(subject,
+                  recipients=[recipient],
+                  html=html)
+    mail.send(msg)
 
 
 @app.route("/contact-us",methods=["GET","POST"])
