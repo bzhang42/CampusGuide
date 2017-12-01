@@ -1,0 +1,40 @@
+{#
+LOCATION PAGE:
+Name
+“Add to Wish List” Button
+“Rate This Location” Button
+“Go Here” Button (will notify friends that you plan to go here soon)
+Picture
+Ranking(s)
+Address
+Nearby Locations
+Locations Inside
+Related Locations
+#}
+
+{% extends "layout.html" %}
+
+{% block title %}
+    Locations
+{% endblock %}
+
+{% block main %}
+    {#
+        Each location's location page
+    #}
+    <form action="/index" method="post">
+        <div class="container">
+            <span class="glyphicon glyphicon-envelope"></span>
+        </div>
+        <div class="container">
+        	<a href="#" class="btn btn-info btn-lg">
+          		<span class="glyphicon glyphicon-heart"></span> Add to Wishlist </a>
+      	</div>
+      	<div class="container">
+      		<span class="glyphicon glyphicon-hourglass"></span>
+      	</div>
+      	<div class="container">
+      	    <a href="#" data-toggle="tooltip" data-placement="right" title="Let your friends know you're going here soon!">testing</a>
+      	</div>
+    </form>
+{% endblock %}

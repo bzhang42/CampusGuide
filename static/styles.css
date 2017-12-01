@@ -45,3 +45,28 @@ main img
     /* constrain images on small screens */
     max-width: 100%;
 }
+
+img .emojione
+{
+  margin: 0px !important;
+  /*display: inline !important;*/
+
+  height: auto;
+  width: 50px;
+}
+
+label > input{ /* HIDE RADIO */
+  visibility: hidden; /* Makes input not-clickable */
+  position: absolute; /* Remove input from document flow */
+}
+label > input + img{ /* IMAGE STYLES */
+  cursor:pointer;
+  border:2px solid transparent;
+}
+label > input:checked + img{ /* (RADIO CHECKED) IMAGE STYLES */
+  border:2px solid #f00;
+}
+
+.img-circle {
+    border-radius: 50%;
+}
