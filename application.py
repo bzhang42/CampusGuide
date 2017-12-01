@@ -124,6 +124,12 @@ def logout():
     return redirect("/")
 
 
+@app.route("/rate")
+def rate():
+    """User rates a random location"""
+    return render_template("rate.html")
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""

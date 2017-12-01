@@ -45,3 +45,18 @@ main img
     /* constrain images on small screens */
     max-width: 100%;
 }
+
+img .emojione
+{
+  margin: 0px !important;
+  /*display: inline !important;*/
+
+  height: auto;
+  width: 50px;
+}
+
+span .emoji {
+  font-size: 30px;
+  vertical-align: middle;
+  line-height: 2;
+}
