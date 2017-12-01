@@ -5,11 +5,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions
 from werkzeug.security import check_password_hash, generate_password_hash
-<<<<<<< HEAD
-from helpers import apology, login_required, lookup, usd
-=======
 from helpers import apology, login_required, check_confirmed, lookup, usd
->>>>>>> daniel
 from itsdangerous import URLSafeTimedSerializer
 
 # Configure application
@@ -34,13 +30,8 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 
-<<<<<<< HEAD
-app.config.update(SECRET_KEY='thiiscs50505050',
-                  SECURITY_PASSWORD_SALT='toomuchtimespentonthisreaccs')
-=======
 app.config.update(SECRET_KEY='CampusGuide',
                   SECURITY_PASSWORD_SALT='danielandbillogsquadup')
->>>>>>> daniel
 
 mail = Mail(app)
 
@@ -64,26 +55,9 @@ ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
 @app.route("/")
 @login_required
-<<<<<<< HEAD
 def index():
-    """Shows latest location ratings and generates random location"""
+    # """Shows latest location ratings and generates random location"""
 
-    # Pulls out latest 5 entries from ratings table
-    latest = db.execute("SELECT * FROM (SELECT * FROM ratings ORDER BY datetime DESC LIMIT 0,5) ORDER BY datetime DESC")
-
-    numLocations = db.execute("SELECT Count(*) FROM locations")
-
-    r_num = random.randint(0, 100)
-
-    r_location = db.execute("SELECT * FROM locations WHERE id = :r_num", r_num=r_num)
-
-    # renders index.html page with correctly formatted values
-    return render_template("index.html", latest=latest, r_location=r_location)
-=======
-@check_confirmed
-def index():
-    """Shows latest location ratings and generates random location"""
-    return render_template("location.html")
     # # Pulls out latest 5 entries from ratings table
     # latest = db.execute("SELECT * FROM (SELECT * FROM ratings ORDER BY datetime DESC LIMIT 0,5) ORDER BY datetime DESC")
 
@@ -95,7 +69,7 @@ def index():
 
     # # renders index.html page with correctly formatted values
     # return render_template("index.html", latest=latest, r_location=r_location)
->>>>>>> daniel
+    return redirect("/")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -232,10 +206,7 @@ def register():
 
 @app.route("/change-password", methods=["GET", "POST"])
 @login_required
-<<<<<<< HEAD
-=======
 @check_confirmed
->>>>>>> daniel
 def change_password():
     """Change user password"""
 
@@ -245,7 +216,6 @@ def change_password():
         # Ensures current password was provided
         if not request.form.get("current_password"):
             return apology("must provide current password", 400)
-<<<<<<< HEAD
 
         # Ensures new password was provided
         if not request.form.get("new_password"):
@@ -292,147 +262,24 @@ def change_password():
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("change_password.html")
-=======
-
-        # Ensures new password was provided
-        if not request.form.get("new_password"):
-            return apology("must provide new password", 400)
-
-        # Ensures confirmation was provided
-        if not request.form.get("confirmation"):
-            return apology("must confirm new password", 400)
-
-        rows = db.execute("SELECT * FROM users WHERE id = :user_id",
-                          user_id=session["user_id"])
-
-        # Ensures current password is correct
-        if not check_password_hash(rows[0]["hash"], request.form.get("current_password")):
-            return apology("invalid password", 400)
-
-        # Ensures password and confirmation match
-        elif request.form.get("new_password") != request.form.get("confirmation"):
-            return apology("password and confirmation must match", 400)
-
-        # Ensures new password is different
-        if request.form.get("new_password") == request.form.get("current_password"):
-            return apology("new password must be different", 400)
-
-        # Stores new password
-        password = request.form.get("new_password")
-
-        # Generates hash for new password
-        p_hash = generate_password_hash(password)
-
-        # Puts new password information into database
-        db.execute("UPDATE users SET hash = :p_hash WHERE id = :user_id",
-                   p_hash=str(p_hash), user_id=session["user_id"])
-
-        # Logs user out
-        session.clear()
-
-        # Notifies successful password update
-        flash("Password updated! Please log in again.")
-
-        # Redirects user to log in again
-        return render_template("login.html")
-
-    # User reached route via GET (as by clicking a link or via redirect)
-    else:
-        return render_template("change_password.html")
-
-
-@app.route("/unconfirmed")
-@login_required
-def unconfirmed():
-    if session["status"] == 1:
-        return redirect("/")
-    else:
-        flash('Please confirm your account!', 'warning')
-        return render_template("unconfirmed.html")
-
-
-@app.route("/confirm/<token>")
-@login_required
-def confirm_email(token):
-    user_id = session["user_id"]
-    try:
-        email = ts.loads(token, salt='danielandbillogsquadup', max_age=86400)
-    except:
-        return apology("Confirmation link too old!")
-
-    status = db.execute("SELECT confirmed FROM users WHERE id = :user_id",
-                        user_id=user_id)[0]["confirmed"]
-    if status == 1:
-        flash('Account already confirmed. Please log in.', 'success')
-    else:
-        db.execute("UPDATE users SET confirmed = 1 WHERE id = :user_id",
-                   user_id=user_id)
-        session["status"] = 1
-        flash('You have confirmed your account. Thanks!', 'success')
-    return redirect('/')
-
-
-@app.route('/resend')
-@login_required
-def resend_confirmation():
-    # Resends email
-
-    # Gets email
-    email = db.execute("SELECT email FROM users WHERE id = :user_id",
-                       user_id=session["user_id"])[0]["email"]
-
-    # Subject
-    subject = "Harvard Campus Guide Confirmation"
-
-    # Unique token
-    token = ts.dumps(email, salt='danielandbillogsquadup')
-    # Creates url
-    confirm_url = url_for('confirm_email', token=token, _external=True)
-    # Html formatting
-    html = render_template("email.html", confirm_url=confirm_url)
-
-    # Sends email
-    send_email(email, subject, html)
-
-    # Alerts email sent
-    flash('A new confirmation email has been sent!', 'success')
-
-    # Redirects to unconfirmed page
-    return redirect("/unconfirmed")
-
-
-def send_email(recipient, subject, html):
-    msg = Message(subject,
-                  recipients=[recipient],
-                  html=html)
-    mail.send(msg)
->>>>>>> daniel
 
 
 @app.route("/contact-us",methods=["GET","POST"])
 def contact():
 
-<<<<<<< HEAD
-    suggestion = request.form.get("suggestion")
-=======
     name = request.form.get("name")
     suggestion = request.form.get("suggestion")
     picture = request.form.get("picture")
->>>>>>> daniel
 
     if request.method == "POST":
         if suggestion == None or len(suggestion) == 0:
             flash("I'm sorry, there was a mistake processing your suggestion!")
             return render_template("/contact.html")
         else:
-<<<<<<< HEAD
-            db.execute("INSERT INTO suggestions (suggestion, user_id) VALUES (:suggestion, :user_id)", suggestion = suggestion, user_id = session["user_id"])
-=======
             if not session["user_id"]:
                 db.execute("INSERT INTO suggestions (name, suggestion, picture) VALUES (:name, :suggestion, :picture)", suggestion = suggestion, name = name, picture = picture)
             else:
                 db.execute("INSERT INTO suggestions (user_id, name, suggestion, picture) VALUES (:user_id, :name, :suggestion, :picture)", user_id = session["user_id"], name = name, suggestion = suggestion, picture = picture)
->>>>>>> daniel
             flash("Submitted suggestion!")
             return redirect("/")
 
