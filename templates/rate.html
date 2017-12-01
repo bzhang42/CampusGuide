@@ -6,22 +6,24 @@
 
 {% block main %}
     <form action="/login" method="post">
-        <div>
-            <div style="font-size:5rem;width:100%;text-align:center;">😠 😩</div>
-        </div>
+        <label>
+            <input type="radio" name="fb" value="small" />
+            <img class="img-circle" src="https://i.imgur.com/HZ2baVL.png">
+        </label>
 
-        <select class="image-picker show-labels show-html">
-            <option data-img-src="http://placekitten.com/220/200" value="1">Cute Kitten 1</option>
-            <option data-img-src="http://placekitten.com/180/200" value="2">Cute Kitten 2</option>
-            <option data-img-src="http://placekitten.com/130/200" value="3">Cute Kitten 3</option>
-            <option data-img-src="http://placekitten.com/270/200" value="4">Cute Kitten 4</option>
-        </select>
+        <label>
+            <input type="radio" name="fb" value="big"/>
+            <img class="img-circle" src="http://placehold.it/40x60/35d/fff&text=f">
+        </label>
 
-        <select class="image-picker show-labels show-html">
-          <option data-img-label="Awww" data-img-src="http://placekitten.com/220/200" value="1">Cute Kitten 1</option>
-          <option data-img-label="Yeah" data-img-src="http://placekitten.com/180/200" value="2">Cute Kitten 2</option>
-          <option data-img-label="Ohai" data-img-src="http://placekitten.com/130/200" value="3">Cute Kitten 3</option>
-          <option data-img-label="Plop" data-img-src="http://placekitten.com/270/200" value="4">Cute Kitten 4</option>
-        </select>
+        <label>
+            <input id="fb3" type="radio" name="fb" value="med" />
+            <img src="http://imgur.com/a/CWJ8f">
+        </label>
+
+        <label>
+            <input id="fb4" type="radio" name="fb" value="long" />
+            <img src="http://placehold.it/60x15/35d/fff&text=f">
+        </label>
     </form>
 {% endblock %}
