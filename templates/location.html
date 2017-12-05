@@ -22,19 +22,73 @@ Related Locations
     {#
         Each location's location page
     #}
-    <form action="/index" method="post">
-        <div class="container">
-            <span class="glyphicon glyphicon-envelope"></span>
-        </div>
-        <div class="container">
-        	<a href="#" class="btn btn-info btn-lg">
-          		<span class="glyphicon glyphicon-heart"></span> Add to Wishlist </a>
-      	</div>
-      	<div class="container">
-      		<span class="glyphicon glyphicon-hourglass"></span>
-      	</div>
-      	<div class="container">
-      	    <a href="#" data-toggle="tooltip" data-placement="right" title="Let your friends know you're going here soon!">testing</a>
-      	</div>
-    </form>
+
+    <div class="page-header">
+        <h1 style="text-align:left;">{{ information["name"] }}</h1>
+    </div>
+
+    <p style="text-align:left;">{{ information["description"] }}</p>
+
+    <p></p>
+
+    {{ information["photo"]|safe }}
+
+    <p></p>
+
+    <p style="text-align:left;" id="address">Address: {{ information["address"] }}</li>
+
+    <button type="button" onclick="document.getElementById('address').style.fontSize='35px'">Expand!</button>
+
+    <div class="row">
+        <div class="col-sm-3" style="background-color:lavender;" data-toggle="tooltip" data-placement="bottom" title="What emotions are invoked here?"><b>Mood</b></div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-3" style="background-color:lavender;" data-toggle="tooltip" data-placement="bottom" title="How often do people come here?"><b>Frequency</b></div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-3" style="background-color:lavender;" data-toggle="tooltip" data-placement="bottom" title="How crowded does it get here?"><b>Popularity</b></div>
+        <div class="col-sm-1"></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3" style="background-color:lavender;">{{ information["mood"] }}</div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-3" style="background-color:lavender;">{{ information["frequency"] }}</div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-3" style="background-color:lavender;">{{ information["popularity"] }}</div>
+        <div class="col-sm-1"></div>
+    </div>
+
+    <p></p>
+
+    <div class="row">
+        <div class="col-sm-3" style="background-color:lavender;" data-toggle="tooltip" data-placement="bottom" title="How good is the food?"><b>Tastiness</b></div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-3" style="background-color:lavender;" data-toggle="tooltip" data-placement="bottom" title="How good would parties here be?"><b>Lit Score</b></div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-3" style="background-color:lavender;" data-toggle="tooltip" data-placement="bottom" title="How likely are you to go on a date here?"><b>Romantic Score</b></div>
+        <div class="col-sm-1"></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3" style="background-color:lavender;">{{ information["conducivity"] }}</div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-3" style="background-color:lavender;">{{ information["litness"] }}</div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-3" style="background-color:lavender;">{{ information["love"] }}</div>
+        <div class="col-sm-1"></div>
+    </div>
+
+    <p id="demo"></p>
+
+    <script type="text/javascript">
+    window.onload = function() {
+        document.getElementById("rate").action = "/rate/" + '{{ information["id"] }}';
+        document.getElementById("button2").formAction="/location/" + '{{ information["id"] }}';
+    }
+    </script>
+
+    <div class="container">
+        <form action="/rate" method="get" id="rate">
+            <button type="submit" id="button1">Rate</button>
+            <button type="submit" id="button2" formaction="/location" formmethod="post">Add to Wishlist</button>
+        </form>
+    </div>
+
 {% endblock %}
