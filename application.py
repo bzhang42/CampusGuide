@@ -124,12 +124,6 @@ def logout():
     return redirect("/")
 
 
-@app.route("/rate")
-def rate():
-    """User rates a random location"""
-    return render_template("rate.html")
-
-
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
@@ -299,6 +293,36 @@ def confirm_email(token):
         session["status"] = 1
         flash('You have confirmed your account. Thanks!', 'success')
     return redirect('/')
+
+
+@app.route("/rate", methods=["GET", "POST"])
+@login_required
+def rate():
+    if request.method == "POST":
+        print("iubfiuwbfiuwbiufbwiubfiuwbeifbwiebfiuwbfiubwiuefbiwbfwuebfiuwebifu")
+        mood = request.form.get("mood")
+        print("iubfiuwbfiuwbiufbwiubfiuwbeifbwiebfiuwbfiubwiuefbiwbfwuebfiuwebifu")
+        print(mood)
+        if not mood:
+            return apology("please answer every question")
+        if mood == 'happy':
+            mood = 1
+        elif mood == 'neutral':
+            mood = 2
+        elif mood == "unhappy":
+            mood = 3
+        elif mood == "sad":
+            mood = 4
+        else:
+            mood = 5
+        db.execute("INSERT INTO ratings (user_id, location_id, mood) VALUES (:user_id, :location_id, :mood)", user_id = session["user_id"], location_id = 11, mood = mood)
+        return redirect("")
+    if request.method == "GET":
+        return render_template("rate.html")
+
+
+#@app.route("/search")
+    #query = request.args.get("q") + '%'
 
 
 @app.route('/resend')
