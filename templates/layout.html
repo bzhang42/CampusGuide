@@ -41,10 +41,13 @@
             <div class="collapse navbar-collapse" id="navbar">
                 {% if session.user_id %}
                     <ul class="navbar-nav mr-auto mt-2">
-                        <li class="nav-item"><a class="nav-link" href="/search">Search</a></li>
                         <li class="nav-item"><a class="nav-link" href="/discover">Discover</a></li>
                         <li class="nav-item"><a class="nav-link" href="/contact-us">Contact Us</a></li>
                         <li class="nav-item"><a class="nav-link" href="/news">News</a></li>
+                        <form class="form-inline">
+                            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        </form>
                     </ul>
                     <ul class="navbar-nav ml-auto mt-2">
                         <li class="nav-item"><a class="nav-link" href="/change-password">Change Password</a></li>
