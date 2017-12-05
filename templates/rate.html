@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Rate
+{% endblock %}
+
+{% block main %}
+    <form action="/login" method="post">
+        <label>
+            <input type="radio" name="fb" value="small" />
+            <img class="img-circle" src="https://i.imgur.com/HZ2baVL.png">
+        </label>
+
+        <label>
+            <input type="radio" name="fb" value="big"/>
+            <img class="img-circle" src="http://placehold.it/40x60/35d/fff&text=f">
+        </label>
+
+        <label>
+            <input id="fb3" type="radio" name="fb" value="med" />
+            <img src="http://imgur.com/a/CWJ8f">
+        </label>
+
+        <label>
+            <input id="fb4" type="radio" name="fb" value="long" />
+            <img src="http://placehold.it/60x15/35d/fff&text=f">
+        </label>
+    </form>
+{% endblock %}
