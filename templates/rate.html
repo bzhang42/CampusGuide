@@ -5,25 +5,92 @@
 {% endblock %}
 
 {% block main %}
-    <form action="/login" method="post">
+    <form action="/rate/{{ location_id }}" method="post">
+        <h3>
+            What is your reaction to this place?
+        </h3>
         <label>
-            <input type="radio" name="fb" value="small" />
-            <img class="img-circle" src="https://i.imgur.com/HZ2baVL.png">
+            <input type="radio" name="mood" value="happy"/>
+            <img src="/static/pictures/happy.png" width="75%">
         </label>
+        <label>
+            <input type="radio" name="mood" value="neutral"/>
+            <img src="/static/pictures/neutral.png" width="75%">
+        </label>
+        <label>
+            <input type="radio" name="mood" value="unhappy"/>
+            <img src="/static/pictures/frowning.png" width="75%">
+        </label>
+        <label>
+            <input type="radio" name="mood" value="angry" />
+            <img src="/static/pictures/angry_face.png" width="75%">
+        </label>
+        <label>
+            <input type="radio" name="mood" value="sad"/>
+            <img src="/static/pictures/tear.png" width="75%">
+        </label>
+        <br>
+        <br>
+        <div>
+            <h3>
+                How often do you go?
+            </h3>
+            <div id="slidecontainer">
+                never gone<input type="range" min="1" max="5" value="3" step="1" class="slider" name="frequency">live there
+            </div>
+        </div>
+        <br>
+        <br>
+        <div>
+            <h3>
+                How busy is this location?
+            </h3>
+            <div id="slidecontainer">
+                <img src="/static/pictures/empty.png" width="10%"><input type="range" min="1" max="5" value="3" step="1" class="slider" name="busy"><img src="/static/pictures/feet.png" width="10%">
+            </div>
+        </div>
+        <br>
+        <br>
+        <div>
+            <h3>
+                How conducive is this location to its intended purpose?
+            </h3>
+            <div id="slidecontainer">
+                <img src="/static/pictures/not_conducive.png" width="10%"><input type="range" min="1" max="5" value="3" step="1" class="slider" name="conducive"><img src="/static/pictures/v_conducive.png" width="10%">
+            </div>
+        </div>
+        <br>
+        <br>
+        <div>
+            <h3>
+                How poppin is this location?
+            </h3>
+            <div id="slidecontainer">
+                <img src="/static/pictures/cobweb.png" width="10%"><input type="range" min="1" max="5" value="3" step="1" class="slider" name="lit"><img src="/static/pictures/lit.png" width="10%">
+            </div>
+        </div>
+        <br>
+        <br>
+        <div>
+            <h3>
+                How good is this location compared to other locations on campus?
+            </h3>
+            <div id="slidecontainer">
+                <img src="/static/pictures/bad_deviance.png" width="10%"><input type="range" min="1" max="5" value="3" step="1" class="slider" name="deviance"><img src="/static/pictures/good_deviance.png" width="10%">
+            </div>
+        </div>
+        <br>
+        <br>
+        <div>
+            <h3>
+                How romantic is this location?
+            </h3>
+            <div id="slidecontainer">
+                <img src="/static/pictures/no_love.png" width="10%"><input type="range" min="1" max="5" value="3" step="1" class="slider" name="romance"><img src="/static/pictures/true_love.png" width="10%">
+            </div>
+        </div>
+        <br>
 
-        <label>
-            <input type="radio" name="fb" value="big"/>
-            <img class="img-circle" src="http://placehold.it/40x60/35d/fff&text=f">
-        </label>
-
-        <label>
-            <input id="fb3" type="radio" name="fb" value="med" />
-            <img src="http://imgur.com/a/CWJ8f">
-        </label>
-
-        <label>
-            <input id="fb4" type="radio" name="fb" value="long" />
-            <img src="http://placehold.it/60x15/35d/fff&text=f">
-        </label>
+        <button class="btn btn-primary" type="submit">Rate!</button>
     </form>
 {% endblock %}

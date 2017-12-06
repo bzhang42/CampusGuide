@@ -1,7 +1,7 @@
 import math
 from operator import itemgetter, attrgetter, methodcaller
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify
 from flask_mail import Mail, Message
 from flask_session import Session
 from tempfile import mkdtemp
@@ -175,13 +175,6 @@ def logout():
     return redirect("/")
 
 
-@app.route("/rate/<location>")
-def rate(location):
-    """User rates a set location"""
-    db.execute()
-    return render_template("rate.html")
-
-
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
@@ -260,6 +253,16 @@ def register():
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("register.html")
+
+
+@app.route("/account")
+@login_required
+@check_confirmed
+def account():
+
+    user = db.execute("SELECT username, email, registered_on FROM users WHERE id = :user_id", user_id = session["user_id"])[0]
+
+    return render_template("overview.html", username = user["username"], email = user["email"], registered_on = user["registered_on"][:10])
 
 
 @app.route("/change-password", methods=["GET", "POST"])
@@ -351,6 +354,45 @@ def confirm_email(token):
         session["status"] = 1
         flash('You have confirmed your account. Thanks!', 'success')
     return redirect('/')
+
+
+@app.route("/rate/<location_id>", methods=["GET", "POST"])
+@login_required
+def rate(location_id):
+    if request.method == "POST":
+        mood = request.form.get("mood")
+        if not mood:
+            return apology("please answer every question")
+        if mood == 'happy':
+            mood = 1
+        elif mood == 'neutral':
+            mood = 2
+        elif mood == "unhappy":
+            mood = 3
+        elif mood == "sad":
+            mood = 4
+        else:
+            mood = 5
+
+        # dont need to error check because something will always be input
+        frequency = request.form.get("frequency")
+        busy = request.form.get("busy")
+        conducive = request.form.get("conducive")
+        lit = request.form.get("lit")
+        deviance = request.form.get("deviance")
+        romance = request.form.get("romance")
+
+        db.execute("INSERT INTO ratings (user_id, location_id, mood, frequency, popularity, conducivity, litness, deviance, love) VALUES (:user_id, :location_id, :mood, :frequency, :busy, :conducive, :lit, :deviance, :romance)", user_id = session["user_id"], location_id = location_id, mood = mood, frequency = frequency, busy = busy, conducive = conducive, lit = lit, deviance = deviance, romance = romance)
+        return redirect("/")
+
+    if request.method == "GET":
+        return render_template("rate.html", location_id = location_id)
+
+
+# @app.route('/location/<location_id>')
+# @login_required
+# def location(location_id):
+#     return apology("nothing here big boy")
 
 
 @app.route('/resend')
