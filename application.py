@@ -53,12 +53,48 @@ db = SQL("sqlite:///campusguide.db")
 ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 @login_required
 @check_confirmed
 def index():
     """Shows latest location ratings and generates random location"""
-    return render_template("location.html")
+
+    informations = db.execute("SELECT * FROM locations WHERE id = :location_id", location_id=15)
+
+    information = informations[0]
+
+    if request.method == "POST":
+
+        return render_template("location.html", information=information)
+
+    else:
+
+        return render_template("location.html", information=information)
+
+
+@app.route("/location/<location_id>", methods=["GET", "POST"])
+@login_required
+@check_confirmed
+def location(location_id):
+
+    """Shows latest location ratings and generates random location"""
+
+    informations = db.execute("SELECT * FROM locations WHERE id = :location_id", location_id=location_id)
+
+    information = informations[0]
+
+    if request.method == "POST":
+
+        db.execute("INSERT INTO wishes (user_id, location_id) VALUES (:user_id, :location_id)", user_id=session["user_id"], location_id=information["id"])
+
+        flash("Added to Wishlist!")
+
+        return render_template("location.html", information=information)
+
+    else:
+
+        return render_template("location.html", information=information)
+
     # # Pulls out latest 5 entries from ratings table
     # latest = db.execute("SELECT * FROM (SELECT * FROM ratings ORDER BY datetime DESC LIMIT 0,5) ORDER BY datetime DESC")
 
