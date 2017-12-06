@@ -204,6 +204,16 @@ def register():
         return render_template("register.html")
 
 
+@app.route("/account")
+@login_required
+@check_confirmed
+def account():
+
+    user = db.execute("SELECT username, email, registered_on FROM users WHERE id = :user_id", user_id = session["user_id"])[0]
+
+    return render_template("overview.html", username = user["username"], email = user["email"], registered_on = user["registered_on"][:10])
+
+
 @app.route("/change-password", methods=["GET", "POST"])
 @login_required
 @check_confirmed
