@@ -1,3 +1,5 @@
+import math
+from operator import itemgetter, attrgetter, methodcaller
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_mail import Mail, Message
@@ -59,17 +61,42 @@ ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 def index():
     """Shows latest location ratings and generates random location"""
 
-    informations = db.execute("SELECT * FROM locations WHERE id = :location_id", location_id=15)
-
-    information = informations[0]
-
     if request.method == "POST":
 
         return render_template("location.html", information=information)
 
     else:
 
-        return render_template("location.html", information=information)
+        dining_info = db.execute("SELECT * FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 3")
+
+        ratings = []
+
+        i = 0
+
+        for location in dining_info:
+            location["misc"] = diningRate(location)
+
+        dining_info = sorted(dining_info, key=itemgetter("misc", "name"), reverse=True)
+        dining_info = dining_info[0:5]
+
+        return render_template("index.html", dining_info = dining_info)
+
+    # # Pulls out latest 5 entries from ratings table
+    # latest = db.execute("SELECT * FROM (SELECT * FROM ratings ORDER BY datetime DESC LIMIT 0,5) ORDER BY datetime DESC")
+
+    # numLocations = db.execute("SELECT Count(*) FROM locations")
+
+    # r_num = random.randint(0, 100)
+
+    # r_location = db.execute("SELECT * FROM locations WHERE id = :r_num", r_num=r_num)
+
+    # # renders index.html page with correctly formatted values
+    # return render_template("index.html", latest=latest, r_location=r_location)
+def diningRate(location):
+    rating = (location["popularity"] + location["conducivity"] + (0.2 * (location["love"] + location["litness"]))) * (math.sqrt(location["deviance"] / 3))
+    rating = rating / (1.2)
+    return rating
+
 
 
 @app.route("/location/<location_id>", methods=["GET", "POST"])
@@ -94,18 +121,6 @@ def location(location_id):
     else:
 
         return render_template("location.html", information=information)
-
-    # # Pulls out latest 5 entries from ratings table
-    # latest = db.execute("SELECT * FROM (SELECT * FROM ratings ORDER BY datetime DESC LIMIT 0,5) ORDER BY datetime DESC")
-
-    # numLocations = db.execute("SELECT Count(*) FROM locations")
-
-    # r_num = random.randint(0, 100)
-
-    # r_location = db.execute("SELECT * FROM locations WHERE id = :r_num", r_num=r_num)
-
-    # # renders index.html page with correctly formatted values
-    # return render_template("index.html", latest=latest, r_location=r_location)
 
 
 @app.route("/login", methods=["GET", "POST"])

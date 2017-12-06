@@ -5,59 +5,85 @@
 {% endblock %}
 
 {% block main %}
-    <table class="table table-striped">
-    <thead>
-        {#
-            Labels the columns of table
-        #}
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Location
-            </th>
-            <th>
-                Rating (Year)
-            </th>
-            <th>
-                Rating (Month)
-            </th>
-            <th>
-                Last Rated
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for location in latest %}
-        {#
-            Iterates through rows of table
-        #}
-            <tr>
+<div class = "row">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                         <h4>TOP DINING HALLS</h4>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+
+                    <th>
+                        Rating
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in dining_info %}
                 {#
-                Fill in table with relevant holdings information
+                    Iterates through rows of table
                 #}
-                <td>
-                    {{ location["name"] }}
-                </td>
+                    <tr>
+                        {#
+                        Fill in table with relevant holdings information
+                        #}
+                        <td>
+                            {{ location["name"] }}
+                        </td>
 
-                <td>
-                    {{ location["address"] }}
-                </td>
+                        <td>
+                            {{ location["misc"] }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-                <td>
-                    {{ location["rating_y"] }}
-                </td>
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                         <h4>TOP DINING HALLS</h4>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Name
+                    </th>
 
-                <td>
-                    {{ location["rating_m"] }}
-                </td>
+                    <th>
+                        Rating
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in dining_info %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        {#
+                        Fill in table with relevant holdings information
+                        #}
+                        <td>
+                            {{ location["name"] }}
+                        </td>
 
-                <td>
-                    {{ location["datetime"] }}
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                        <td>
+                            {{ location["misc"] }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}
