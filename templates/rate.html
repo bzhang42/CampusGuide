@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-    <form action="/rate" method="post">
+    <form action="/rate/{{ location_id }}" method="post">
         <h2>
             What is your reaction to this place?
         </h2>
@@ -29,59 +29,61 @@
             <input type="radio" name="mood" value="sad"/>
             <img src="/static/pictures/tear.png">
         </label>
-
-        <h2>
-            How often do you go?
-        </h2>
-        <div id="slidecontainer">
-            never gone<input type="range" min="1" max="100" value="50" class="slider" id="myRange">live there
+        <br>
+        <div>
+            <h2>
+                How often do you go?
+            </h2>
+            <div id="slidecontainer">
+                never gone<input type="range" min="1" max="5" value="3" step="1" class="slider" name="frequency">live there
+            </div>
         </div>
-
-
-        <h2>
-            How often do you go?
-        </h2>
-        <label>
-            <input type="radio" name="frequency" value="small"/>
-            <img src="/static/pictures/happy.png">
-        </label>
-        <label>
-            <input type="radio" name="frequency" value="small"/>
-            <img src="/static/pictures/neutral.png">
-        </label>
-        <label>
-            <input type="radio" name="frequency" value="small"/>
-            <img src="/static/pictures/frowning.png">
-        </label>
-        <label>
-            <input type="radio" name="frequency" value="small" />
-            <img src="/static/pictures/angry_face.png">
-        </label>
-        <label>
-            <input type="radio" name="frequency" value="small"/>
-            <img src="/static/pictures/tear.png">
-        </label>
-
-
-        <h2>
-            How busy is this location?
-        </h2>
-
-        <h2>
-            How conducive is this location to its intended purpose?
-        </h2>
-
-        <h2>
-            How poppin is this location?
-        </h2>
-
-        <h2>
-            How good is this location compared to other locations on campus?
-        </h2>
-
-        <h2>
-            How romantic is this location?
-        </h2>
+        <br>
+        <div>
+            <h2>
+                How busy is this location?
+            </h2>
+            <div id="slidecontainer">
+                <img src="/static/pictures/empty.png"><input type="range" min="1" max="5" value="3" step="1" class="slider" name="busy"><img src="/static/pictures/feet.png">
+            </div>
+        </div>
+        <br>
+        <div>
+            <h2>
+                How conducive is this location to its intended purpose?
+            </h2>
+            <div id="slidecontainer">
+                <img src="/static/pictures/not_conducive.png"><input type="range" min="1" max="5" value="3" step="1" class="slider" name="conducive"><img src="/static/pictures/v_conducive.png">
+            </div>
+        </div>
+        <br>
+        <div>
+            <h2>
+                How poppin is this location?
+            </h2>
+            <div id="slidecontainer">
+                <img src="/static/pictures/cobweb.png"><input type="range" min="1" max="5" value="3" step="1" class="slider" name="lit"><img src="/static/pictures/lit.png">
+            </div>
+        </div>
+        <br>
+        <div>
+            <h2>
+                How good is this location compared to other locations on campus?
+            </h2>
+            <div id="slidecontainer">
+                <img src="/static/pictures/bad_deviance.png"><input type="range" min="1" max="5" value="3" step="1" class="slider" name="deviance"><img src="/static/pictures/good_deviance.png">
+            </div>
+        </div>
+        <br>
+        <div>
+            <h2>
+                How romantic is this location?
+            </h2>
+            <div id="slidecontainer">
+                <img src="/static/pictures/no_love.png"><input type="range" min="1" max="5" value="3" step="1" class="slider" name="romance"><img src="/static/pictures/true_love.png">
+            </div>
+        </div>
+        <br>
 
         <button class="btn btn-primary" type="submit">Rate!</button>
     </form>

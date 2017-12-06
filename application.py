@@ -1,5 +1,5 @@
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify
 from flask_mail import Mail, Message
 from flask_session import Session
 from tempfile import mkdtemp
@@ -295,14 +295,11 @@ def confirm_email(token):
     return redirect('/')
 
 
-@app.route("/rate", methods=["GET", "POST"])
+@app.route("/rate/<location_id>", methods=["GET", "POST"])
 @login_required
-def rate():
+def rate(location_id):
     if request.method == "POST":
-        print("iubfiuwbfiuwbiufbwiubfiuwbeifbwiebfiuwbfiubwiuefbiwbfwuebfiuwebifu")
         mood = request.form.get("mood")
-        print("iubfiuwbfiuwbiufbwiubfiuwbeifbwiebfiuwbfiubwiuefbiwbfwuebfiuwebifu")
-        print(mood)
         if not mood:
             return apology("please answer every question")
         if mood == 'happy':
@@ -315,14 +312,26 @@ def rate():
             mood = 4
         else:
             mood = 5
-        db.execute("INSERT INTO ratings (user_id, location_id, mood) VALUES (:user_id, :location_id, :mood)", user_id = session["user_id"], location_id = 11, mood = mood)
-        return redirect("")
+
+        # dont need to error check because something will always be input
+        frequency = request.form.get("frequency")
+        busy = request.form.get("busy")
+        conducive = request.form.get("conducive")
+        lit = request.form.get("lit")
+        deviance = request.form.get("deviance")
+        romance = request.form.get("romance")
+
+        db.execute("INSERT INTO ratings (user_id, location_id, mood, frequency, popularity, conducivity, litness, deviance, love) VALUES (:user_id, :location_id, :mood, :frequency, :busy, :conducive, :lit, :deviance, :romance)", user_id = session["user_id"], location_id = location_id, mood = mood, frequency = frequency, busy = busy, conducive = conducive, lit = lit, deviance = deviance, romance = romance)
+        return redirect("/")
+
     if request.method == "GET":
-        return render_template("rate.html")
+        return render_template("rate.html", location_id = location_id)
 
 
-#@app.route("/search")
-    #query = request.args.get("q") + '%'
+# @app.route('/location/<location_id>')
+# @login_required
+# def location(location_id):
+#     return apology("nothing here big boy")
 
 
 @app.route('/resend')

@@ -73,7 +73,7 @@ label > input:checked + img{ /* (RADIO CHECKED) IMAGE STYLES */
 
 .slider {
     -webkit-appearance: none;
-    width: 65%;
+    width: 50%;
     height: 15px;
     border-radius: 5px;
     background: #d3d3d3;
