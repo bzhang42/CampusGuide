@@ -478,7 +478,6 @@ def information():
 @check_confirmed
 def rate(r_location_id):
     if request.method == "POST":
-        print("hi")
         mood = request.form.get("mood")
         if not mood:
             return apology("please answer every question")
@@ -492,7 +491,6 @@ def rate(r_location_id):
             mood = 4
         else:
             mood = 5
-        print(r_location_id)
         # dont need to error check because something will always be input
         frequency = request.form.get("frequency")
         busy = request.form.get("busy")
@@ -500,27 +498,21 @@ def rate(r_location_id):
         lit = request.form.get("lit")
         deviance = request.form.get("deviance")
         romance = request.form.get("romance")
-        print(r_location_id)
         db.execute("INSERT INTO ratings (user_id, location_id, mood, frequency, popularity, conducivity, litness, deviance, love) VALUES (:user_id, :location_id, :mood, :frequency, :busy, :conducive, :lit, :deviance, :romance)",
                     user_id = session["user_id"], location_id = r_location_id, mood = mood, frequency = frequency, busy = busy, conducive = conducive, lit = lit, deviance = deviance, romance = romance)
-        print(r_location_id)
         updateRatings(r_location_id)
-        print(r_location_id)
         flash("Thank you for rating!")
 
         return redirect("/")
 
     if request.method == "GET":
-        print(r_location_id)
         informations = db.execute("SELECT * FROM locations WHERE id = :location_id", location_id=r_location_id)
-        print(r_location_id)
         tags = db.execute("SELECT * FROM tags WHERE location_id = :location_id AND (label_id = 3 OR label_id = 4)", location_id=r_location_id)
 
         if len(tags) != 0:
             food = True
         else:
             food = False
-        print(r_location_id)
         information = informations[0]
 
         return render_template("rate.html", information = information, food = food)
