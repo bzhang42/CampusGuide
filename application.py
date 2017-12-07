@@ -52,7 +52,7 @@ app.config.update(DEBUG=True,
 mail = Mail(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///campusguide.db")
+db = SQL("postgres://btcefetnvzupgp:545060efc226c0b3a6fa43aad9cd1758e66b59c204628f9aeb773142b8e9bd17@ec2-50-17-203-84.compute-1.amazonaws.com:5432/d36pmqvm7gjdjr")
 
 ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
