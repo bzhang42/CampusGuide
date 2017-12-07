@@ -284,12 +284,14 @@ i.red{
     color:#BC0213;
 }
 
+/* Text box that adapts to size */
 .animated {
     			-webkit-transition: height 0.2s;
 				-moz-transition: height 0.2s;
 				transition: height 0.2s;
 			}
 
+/* Bootstrap list group class with vertical navbar */
 .list-group{
     width: 350px;
     height: 330px;
@@ -303,22 +305,26 @@ i.red{
   border-color: #000000;
 }
 
+/* Spacing between buttons */
 .divider{
     width:5px;
     height:auto;
     display:inline-block;
 }
 
+/* Centers image in middle of column */
 .center-block {
    margin-left:auto;
    margin-right:auto;
    display:block;
 }
 
+/* Centers text */
 .text-center {
    text-align:center
 }
 
+/* Profile Navbar Icon  */
 .avatar {
     height: 40px;
     width: 40px;

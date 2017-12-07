@@ -1,4 +1,5 @@
 import math
+import random
 from datetime import datetime
 from operator import itemgetter, attrgetter, methodcaller
 from statistics import mode, StatisticsError
@@ -53,23 +54,30 @@ mail = Mail(app)
 
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///campusguide.db")
-# db = SQL("postgres://btcefetnvzupgp:545060efc226c0b3a6fa43aad9cd1758e66b59c204628f9aeb773142b8e9bd17@ec2-50-17-203-84.compute-1.amazonaws.com:5432/d36pmqvm7gjdjr")
 
+# Configures part of email url
 ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
-g_location_id = 15
+# Initializes global varaible for location id
+g_location_id = 0
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     """Shows latest location ratings and generates random location"""
 
+    # Need to declare global inside of function to modify variable
     global g_location_id
 
+    # If POST request
     if request.method == "POST":
 
+        # Gets mood from html
         mood = request.form.get("mood")
+        # Makes sure its not null
         if not mood:
             return apology("please answer every question")
+        # Chain to check what mood was rated
         if mood == 'happy':
             mood = 1
         elif mood == 'neutral':
@@ -81,7 +89,7 @@ def index():
         else:
             mood = 5
 
-        # dont need to error check because something will always be input
+        # Dont need to error check because something will always be input (nature of slider)
         frequency = request.form.get("frequency")
         busy = request.form.get("busy")
         conducive = request.form.get("conducive")
@@ -89,29 +97,40 @@ def index():
         deviance = request.form.get("deviance")
         romance = request.form.get("romance")
 
+        # If guest
         if session.get("user_id") is None:
             user_id = 0
+        # If has account and visits page
         else:
             user_id = session["user_id"]
 
+        # Inserts history of rating
         db.execute("INSERT INTO ratings (user_id, location_id, mood, frequency, popularity, conducivity, litness, deviance, love) VALUES (:user_id, :location_id, :mood, :frequency, :busy, :conducive, :lit, :deviance, :romance)",
-                    user_id = user_id, location_id = g_location_id, mood = mood, frequency = frequency, busy = busy, conducive = conducive, lit = lit, deviance = deviance, romance = romance)
+                   user_id=user_id, location_id=g_location_id, mood=mood, frequency=frequency, busy=busy, conducive=conducive, lit=lit, deviance=deviance, romance=romance)
 
+        # Calculates new ratings for location
         updateRatings(g_location_id)
 
+        # Flash success message
         flash("Thank you for rating!")
 
+        # Redirect to home page
         return redirect("/")
 
     else:
 
-        locations = db.execute("SELECT * FROM locations WHERE description IS NOT NULL ORDER BY RANDOM() LIMIT 1")
+        # Pull out random location with description
+        locations = db.execute(
+            "SELECT * FROM locations WHERE description IS NOT NULL ORDER BY RANDOM() LIMIT 1")
 
         rand_location = locations[0]
 
+        # Sets global variable
         g_location_id = rand_location["id"]
 
-        dining_info = db.execute("SELECT * FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 3")
+        # Pulls out all dining hall locations and calculates rating to determine ranking
+        dining_info = db.execute(
+            "SELECT * FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 3")
 
         for location in dining_info:
             location["misc"] = float("{0:.3f}".format(diningRate(location)))
@@ -119,7 +138,9 @@ def index():
         dining_info = sorted(dining_info, key=itemgetter("misc", "name"), reverse=True)
         dining_info = dining_info[0:5]
 
-        restaurant_info = db.execute("SELECT * FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 4")
+        # Pulls out all restaurant locations and calculates rating to determine ranking
+        restaurant_info = db.execute(
+            "SELECT * FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 4")
 
         for location in restaurant_info:
             location["misc"] = float("{0:.3f}".format(restaurantRate(location)))
@@ -127,7 +148,9 @@ def index():
         restaurant_info = sorted(restaurant_info, key=itemgetter("misc", "name"), reverse=True)
         restaurant_info = restaurant_info[0:5]
 
-        housing_info = db.execute("SELECT * FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 5")
+        # Pulls out all housing locations and calculates rating to determine ranking
+        housing_info = db.execute(
+            "SELECT * FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 5")
 
         for location in housing_info:
             location["misc"] = float("{0:.3f}".format(housingRate(location)))
@@ -135,7 +158,9 @@ def index():
         housing_info = sorted(housing_info, key=itemgetter("misc", "name"), reverse=True)
         housing_info = housing_info[0:5]
 
-        dating_info = db.execute("SELECT * FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 8")
+        # Pulls out all dating locations and calculates rating to determine ranking
+        dating_info = db.execute(
+            "SELECT * FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 8")
 
         for location in dating_info:
             location["misc"] = float("{0:.3f}".format(datingRate(location)))
@@ -143,44 +168,47 @@ def index():
         dating_info = sorted(dating_info, key=itemgetter("misc", "name"), reverse=True)
         dating_info = dating_info[0:5]
 
-        tags = db.execute("SELECT * FROM tags WHERE location_id = :location_id AND (label_id = 3 OR label_id = 4)", location_id=g_location_id)
+        # Determines if location is food or not
+        tags = db.execute(
+            "SELECT * FROM tags WHERE location_id = :location_id AND (label_id = 3 OR label_id = 4)", location_id=g_location_id)
 
         if len(tags) != 0:
             food = True
         else:
             food = False
 
-        return render_template("index.html", food = food, rand_location = rand_location, dining_info = dining_info, restaurant_info = restaurant_info, housing_info = housing_info, dating_info = dating_info)
+        # Passes information to HTML
+        return render_template("index.html", food=food, rand_location=rand_location, dining_info=dining_info, restaurant_info=restaurant_info, housing_info=housing_info, dating_info=dating_info)
 
-    # # Pulls out latest 5 entries from ratings table
-    # latest = db.execute("SELECT * FROM (SELECT * FROM ratings ORDER BY datetime DESC LIMIT 0,5) ORDER BY datetime DESC")
-
-    # numLocations = db.execute("SELECT Count(*) FROM locations")
-
-    # r_num = random.randint(0, 100)
-
-    # r_location = db.execute("SELECT * FROM locations WHERE id = :r_num", r_num=r_num)
-
-    # # renders index.html page with correctly formatted values
-    # return render_template("index.html", latest=latest, r_location=r_location)
 
 def diningRate(location):
-    rating = (location["popularity"] + location["conducivity"] + (0.2 * (location["love"] + location["litness"]))) * (math.sqrt(location["deviance"] / 3.0))
+    # Formula for dining rates
+    rating = (location["popularity"] + location["conducivity"] + (0.2 *
+                                                                  (location["love"] + location["litness"]))) * (math.sqrt(location["deviance"] / 3.0))
     rating = rating / (1.2)
     return rating
 
+
 def restaurantRate(location):
-    rating = (location["popularity"] + location["conducivity"] + (0.6 * location["love"]) + (0.4 * location["litness"])) * (math.sqrt(location["deviance"] / 3.0))
+    # Formula for restaurant rates
+    rating = (location["popularity"] + location["conducivity"] + (0.6 * location["love"]
+                                                                  ) + (0.4 * location["litness"])) * (math.sqrt(location["deviance"] / 3.0))
     rating = rating / (1.5)
     return rating
 
+
 def housingRate(location):
-    rating = (location["conducivity"] + location["litness"] + (0.2 * (location["popularity"] + location["love"]))) * (math.sqrt(location["deviance"] / 3.0))
+    # Formula for housing rates
+    rating = (location["conducivity"] + location["litness"] + (0.2 *
+                                                               (location["popularity"] + location["love"]))) * (math.sqrt(location["deviance"] / 3.0))
     rating = rating / (1.2)
     return rating
 
+
 def datingRate(location):
-    rating = (location["love"] + (0.6 * location["conducivity"]) + (0.2 * location["litness"]) - (0.2 * (location["popularity"] - 3))) * (math.sqrt(location["deviance"] / 3.0))
+    # Formula for dating rates
+    rating = (location["love"] + (0.6 * location["conducivity"]) + (0.2 * location["litness"]
+                                                                    ) - (0.2 * (location["popularity"] - 3))) * (math.sqrt(location["deviance"] / 3.0))
     rating = rating / (1.0)
     return rating
 
@@ -189,17 +217,21 @@ def datingRate(location):
 @login_required
 @check_confirmed
 def location(location_id):
-
     """Shows latest location ratings and generates random location"""
 
-    informations = db.execute("SELECT * FROM locations WHERE id = :location_id", location_id=location_id)
+    # Pulls out information from database
+    informations = db.execute(
+        "SELECT * FROM locations WHERE id = :location_id", location_id=location_id)
 
     information = informations[0]
 
     if request.method == "POST":
 
-        db.execute("INSERT INTO wishes (user_id, location_id) VALUES (:user_id, :location_id)", user_id=session["user_id"], location_id=information["id"])
+        # Assumes clicked wishlist, add into wishlist table
+        db.execute("INSERT INTO wishes (user_id, location_id) VALUES (:user_id, :location_id)",
+                   user_id=session["user_id"], location_id=information["id"])
 
+        # Flash success message
         flash("Added to Wishlist!")
 
         return render_template("location.html", information=information)
@@ -240,8 +272,10 @@ def login():
         session["status"] = db.execute(
             "SELECT confirmed FROM users WHERE id = :user_id", user_id=session["user_id"])[0]["confirmed"]
 
+        # If not confirmed
         if session["status"] == 0:
             return render_template("unconfirmed.html")
+        # If confirmed gets to home screen with no problems
         else:
             return redirect("/")
 
@@ -251,32 +285,43 @@ def login():
 
 
 @app.route("/user/<user_id>")
-# @login_required
-# @check_confirmed
+@login_required
+@check_confirmed
 def profile(user_id):
 
-    favorite_places = db.execute("SELECT DISTINCT name, href FROM wishes INNER JOIN locations ON wishes.location_id = locations.id WHERE user_id = :user_id", user_id = user_id)
+    # Gets places off wishlist
+    favorite_places = db.execute(
+        "SELECT DISTINCT name, href FROM wishes INNER JOIN locations ON wishes.location_id = locations.id WHERE user_id = :user_id", user_id=user_id)
 
+    # Checks if user exists
     try:
-        user = db.execute("SELECT username, registered_on FROM users WHERE id = :user_id", user_id = user_id)[0]
+        user = db.execute(
+            "SELECT username, registered_on FROM users WHERE id = :user_id", user_id=user_id)[0]
+    # If user has no places
     except:
         return render_template("invalid.html")
 
+    # Formmats join date
     join_date = datetime.strptime(user["registered_on"], '%Y-%m-%d %H:%M:%S')
     join_date = join_date.strftime('%B %d, %Y')
 
-    num_rated = db.execute("SELECT COUNT(user_id) FROM ratings WHERE user_id = :user_id", user_id = user_id)[0]["COUNT(user_id)"]
+    # Number of places rated
+    num_rated = db.execute("SELECT COUNT(user_id) FROM ratings WHERE user_id = :user_id", user_id=user_id)[
+        0]["COUNT(user_id)"]
 
-    return render_template("profile.html", user_id = user_id, favorite_places = favorite_places, username = user["username"], join_date = join_date, ratings = num_rated)
+    # Returns profile
+    return render_template("profile.html", user_id=user_id, favorite_places=favorite_places, username=user["username"], join_date=join_date, ratings=num_rated)
 
 
 @app.route("/search")
 @login_required
 @check_confirmed
 def search():
+    ''' searches for places '''
+    # Wildcard query for name only
     query = request.args.get("q") + '%'
-    search_results = db.execute("SELECT id, name FROM locations WHERE name LIKE :name", name = query)
-    print(search_results)
+    search_results = db.execute("SELECT id, name FROM locations WHERE name LIKE :name", name=query)
+    # Returns jsonified list results
     return jsonify(search_results)
 
 
@@ -330,7 +375,6 @@ def register():
         # Ensure password and confirmation match
         elif request.form.get("password") != request.form.get("confirmation"):
             return apology("password and confirmation must match", 400)
-        print("hey")
         # Store valid username
         username = request.form.get("username")
 
@@ -339,21 +383,21 @@ def register():
 
         # Store valid email
         email = request.form.get("email")
-        print("hey")
         # Calculate and store hash from password
         p_hash = generate_password_hash(password)
-        print("hey")
         # Put username and password information into database
         result = db.execute("INSERT INTO users (username, hash, email) VALUES (:username, :p_hash, :email)",
-                   username=username, p_hash=str(p_hash), email=email)
-        print("hey")
+                            username=username, p_hash=str(p_hash), email=email)
+        # Determines whether session is valid
         session["user_id"] = result
 
         flash("Registered!")
 
+        # Determines whether user is confirmed or not
         session["status"] = db.execute("SELECT confirmed FROM users WHERE id = :user_id",
-                                            user_id=session["user_id"])[0]["confirmed"]
+                                       user_id=session["user_id"])[0]["confirmed"]
 
+        # Sends email
         subject = "Please confirm your Harvard CampusGuide email"
 
         token = ts.dumps(email, salt='danielandbillogsquadup')
@@ -364,6 +408,7 @@ def register():
 
         flash('A confirmation email has been sent via email.', 'success')
 
+        # Redirects to unconfirmed until clicks email link
         return redirect("/unconfirmed")
 
     # User reached route via GET (as by clicking a link or via redirect)
@@ -375,10 +420,10 @@ def register():
 @login_required
 @check_confirmed
 def account():
-
-    user = db.execute("SELECT username, email, registered_on FROM users WHERE id = :user_id", user_id = session["user_id"])[0]
-
-    return render_template("overview.html", username = user["username"], email = user["email"], registered_on = user["registered_on"][:10])
+    # Gets user info for account overview page
+    user = db.execute("SELECT username, email, registered_on FROM users WHERE id = :user_id",
+                      user_id=session["user_id"])[0]
+    return render_template("overview.html", username=user["username"], email=user["email"], registered_on=user["registered_on"][:10])
 
 
 @app.route("/change-password", methods=["GET", "POST"])
@@ -444,8 +489,10 @@ def change_password():
 @app.route("/unconfirmed")
 @login_required
 def unconfirmed():
+    # If confirmed redirects to home
     if session["status"] == 1:
         return redirect("/")
+    # If unconfirmed asks you to confirm
     else:
         flash('Please confirm your account!', 'warning')
         return render_template("unconfirmed.html")
@@ -455,15 +502,21 @@ def unconfirmed():
 @login_required
 def confirm_email(token):
     user_id = session["user_id"]
+    # Attempts to load token
     try:
         email = ts.loads(token, salt='danielandbillogsquadup', max_age=86400)
+    # If doesn't work
     except:
         return apology("Confirmation link too old!")
 
+    # Checks whether confirmed
     status = db.execute("SELECT confirmed FROM users WHERE id = :user_id",
                         user_id=user_id)[0]["confirmed"]
+
+    # If already confirmed
     if status == 1:
         flash('Account already confirmed. Please log in.', 'success')
+    # if just now confirmed
     else:
         db.execute("UPDATE users SET confirmed = 1 WHERE id = :user_id",
                    user_id=user_id)
@@ -472,32 +525,30 @@ def confirm_email(token):
     return redirect('/')
 
 
-@app.route("/the-project", methods = ["GET"])
+@app.route("/the-project")
 def information():
+    # Team info
     return render_template("team.html")
 
 
-@app.route("/discover", methods = ["GET"])
+@app.route("/discover")
 def discover():
-    first_row = {}
-    all_labels = []
-    for item in db.execute("SELECT id, label FROM labels"):
-        label_id = item['id']
-        label_name = item['label']
-        if label_id in (1, 2, 3):
-            first_row[label_name] = sorted(db.execute("SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = :label_id", label_id = label_id), key = itemgetter("name"))
-
-    return render_template("discover.html")
+    # Discover page shows you random location
+    discovered = random.randint(1, 372)
+    return redirect("/location/" + str(discovered))
 
 
 @app.route("/rate/<r_location_id>", methods=["GET", "POST"])
 @login_required
 @check_confirmed
 def rate(r_location_id):
+    # If request is POSTing info
     if request.method == "POST":
         mood = request.form.get("mood")
+        # If emoji not selected
         if not mood:
             return apology("please answer every question")
+        # Assigns value to mood
         if mood == 'happy':
             mood = 1
         elif mood == 'neutral':
@@ -515,30 +566,46 @@ def rate(r_location_id):
         lit = request.form.get("lit")
         deviance = request.form.get("deviance")
         romance = request.form.get("romance")
+        # Inserts ratings into database
         db.execute("INSERT INTO ratings (user_id, location_id, mood, frequency, popularity, conducivity, litness, deviance, love) VALUES (:user_id, :location_id, :mood, :frequency, :busy, :conducive, :lit, :deviance, :romance)",
-                    user_id = session["user_id"], location_id = r_location_id, mood = mood, frequency = frequency, busy = busy, conducive = conducive, lit = lit, deviance = deviance, romance = romance)
+                   user_id=session["user_id"], location_id=r_location_id, mood=mood, frequency=frequency, busy=busy, conducive=conducive, lit=lit, deviance=deviance, romance=romance)
+        # Updates location ratings
         updateRatings(r_location_id)
         flash("Thank you for rating!")
 
         return redirect("/")
 
     if request.method == "GET":
-        informations = db.execute("SELECT * FROM locations WHERE id = :location_id", location_id=r_location_id)
-        tags = db.execute("SELECT * FROM tags WHERE location_id = :location_id AND (label_id = 3 OR label_id = 4)", location_id=r_location_id)
+
+        # Pull out information on location being rated
+        informations = db.execute("SELECT * FROM locations WHERE id = :location_id",
+                                  location_id=r_location_id)
+
+        # Checks if location is food or not
+        tags = db.execute("SELECT * FROM tags WHERE location_id = :location_id AND (label_id = 3 OR label_id = 4)",
+                          location_id=r_location_id)
 
         if len(tags) != 0:
             food = True
         else:
             food = False
+
         information = informations[0]
 
-        return render_template("rate.html", information = information, food = food)
+        return render_template("rate.html", information=information, food=food)
 
 
 def updateRatings(location_id):
-    ratings = db.execute("SELECT * FROM ratings WHERE location_id = :location_id", location_id=location_id)
+    '''formulaically calculates aggregate ratings'''
 
+    # Pull all ratings on location from database
+    ratings = db.execute("SELECT * FROM ratings WHERE location_id = :location_id",
+                         location_id=location_id)
+
+    # Calculates current time
     time1 = datetime.now()
+
+    # Creates empty lists
     moods = []
     frequencies = []
     popularities = []
@@ -548,21 +615,33 @@ def updateRatings(location_id):
     romances = []
     weights = []
 
+    # Loops through all ratings of location
     for rating in ratings:
+
+        # Multiple starts at zero and increases with proximity to today
         mult = 0.0
+
+        # Calculates total seconds since being rated
         difference = time1 - datetime.strptime(rating["datetime"], '%Y-%m-%d %H:%M:%S')
         diff_secs = difference.total_seconds()
+
+        # If within a year
         if diff_secs < 31536000.0:
             mult += 0.5
+
+            # If within 6 months
             if diff_secs < 15768000.0:
                 mult += 0.3
+
+                # If within a month
                 if diff_secs < 2628000.0:
                     mult += 0.1
+
+                    # If within a week
                     if diff_secs < 604800.0:
                         mult += 0.1
-        print(mult)
-        print("hi")
-        print("hi")
+
+        # Add rating to lists multiplied by mult
         moods.append(rating["mood"])
         frequencies.append(rating["frequency"] * mult)
         popularities.append(rating["popularity"] * mult)
@@ -570,16 +649,17 @@ def updateRatings(location_id):
         litnesses.append(rating["litness"] * mult)
         deviances.append(rating["deviance"] * mult)
         romances.append(rating["love"] * mult)
+
+        # Add to weights
         weights.append(mult)
 
+    # Try to find mode of moods, unless failure because there are two, the mood = 0
     try:
         mood = mode(moods)
     except StatisticsError:
         mood = 0
-    print(sum(weights))
-    print("hi")
-    print("hi")
-    print("hi")
+
+    # Find weighted average of other criteria
     frequency = float("{0:.3f}".format(sum(frequencies) / sum(weights)))
     popularity = float("{0:.3f}".format(sum(popularities) / sum(weights)))
     conducivity = float("{0:.3f}".format(sum(conducivities) / sum(weights)))
@@ -587,8 +667,9 @@ def updateRatings(location_id):
     deviance = float("{0:.3f}".format(sum(deviances) / sum(weights)))
     love = float("{0:.3f}".format(sum(romances) / sum(weights)))
 
+    # Insert information into database
     db.execute("UPDATE locations SET mood = :mood, frequency = :frequency, popularity = :popularity, conducivity = :conducivity, litness = :litness, deviance = :deviance, love = :love WHERE id = :location_id",
-                mood=mood, frequency=frequency, popularity=popularity, conducivity=conducivity, litness=litness, deviance=deviance, love=love, location_id=location_id)
+               mood=mood, frequency=frequency, popularity=popularity, conducivity=conducivity, litness=litness, deviance=deviance, love=love, location_id=location_id)
 
 
 @app.route('/resend')
@@ -621,31 +702,40 @@ def resend_confirmation():
 
 
 def send_email(recipient, subject, html):
+    # Sends email
     msg = Message(subject,
                   recipients=[recipient],
                   html=html)
     mail.send(msg)
 
 
-@app.route("/contact-us",methods=["GET","POST"])
+@app.route("/contact-us", methods=["GET", "POST"])
 def contact():
 
+    # Reassign for easier access
     name = request.form.get("name")
     suggestion = request.form.get("suggestion")
     picture = request.form.get("picture")
 
+    # If request POSTS
     if request.method == "POST":
+        # Empty suggestion
         if suggestion == None or len(suggestion) == 0:
             flash("I'm sorry, there was a mistake processing your suggestion!")
             return render_template("/contact.html")
         else:
+            # If not user
             if not session["user_id"]:
-                db.execute("INSERT INTO suggestions (name, suggestion, picture) VALUES (:name, :suggestion, :picture)", suggestion = suggestion, name = name, picture = picture)
+                db.execute("INSERT INTO suggestions (name, suggestion, picture) VALUES (:name, :suggestion, :picture)",
+                           suggestion=suggestion, name=name, picture=picture)
+            # If user
             else:
-                db.execute("INSERT INTO suggestions (user_id, name, suggestion, picture) VALUES (:user_id, :name, :suggestion, :picture)", user_id = session["user_id"], name = name, suggestion = suggestion, picture = picture)
+                db.execute("INSERT INTO suggestions (user_id, name, suggestion, picture) VALUES (:user_id, :name, :suggestion, :picture)",
+                           user_id=session["user_id"], name=name, suggestion=suggestion, picture=picture)
             flash("Submitted suggestion!")
             return redirect("/")
 
+    # If request GET
     if request.method == "GET":
         return render_template("contact.html")
 

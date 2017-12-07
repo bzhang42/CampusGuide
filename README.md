@@ -1,2 +1,18 @@
 # CampusGuide
 CS50 Final Project
+
+To run this code yourself you will need to pip install Flask-Mail and pip install itsdangerous.
+
+When you first get on the Harvard Campus Guide page, you will notice that you are presented with a randomly-selected location from our database and a form to the right of the location, asking you to rate it. If you scroll down, you can see aggregate ratings of some different categories of locations, like: dining halls, restaurants, freshman dorms, and top date spots. All the names are hyperlinks, so you can click them to learn more about the locations.
+
+Now, you must register an account if you do not already have one, so head to the register page. Here you must input a unique username, a password, and your harvard email. It is important you put a real harvard email because you will be asked to confirm your email. Click register and you'll see a confirmation email page. Check your harvard email's inbox and go to the link in the email you received. If you don't see it, click the resend button! You don't have to confirm your email, but we plan to later implement functionality that does make it required.
+
+Once you confirm your account, you will be redirected to the home page. Here, you will again see the same sight as you without your account already made, this is because we still want user feedback from people that choose to not make an account.
+
+From here you could go to the "Contact Us" page that allows you to submit suggestions to what locations you think we should add (we currently have 371!). You can go the "our team" button to add us on linkedin and facebook (like, comment, & subscribe). You can also search for a location using the search bar, however, you will not be allowed to search again unless you rate the page or leave. On the right side of the screen we have the account profile button (which is an image icon) that you can click on and be redirected to your profile. On your profile, you can see your profile picture (which we've made Batman for everyone due to time constraints but we hope to improve later), number of ratings, given, join date, and your wishlist (which we'll describe a little later). On the right of the screen we also have the Account button that lets us either view our account information or log out. If we click on "account" we can see username, email, and join date, and we are given the option to change our password. If we click "change password" we will only have to put in our current password and the new password twice and we'll be set.
+
+Now we click back on the CampusGuide/Harvard icon to be redirected to the home screen. Now we go to the location search bar and look for somewhere we're interested in seeing the rating of. For example, lets look up "Zin". The bar autocompletes itself and directs us to the Zinneken's Belgian Waffles page, where we can see mood, frequency, popularity, conducivity, lit score, and romantic score. If we click on "add to wish list", Zinneken's gets added to our profile's wishlist that we talked about earlier (you can navigate back to see for yourself!). Now we click on "rate" and are taken to a rating page, where we can rate the location, click "rate" and be redirected back to the home screen.
+
+That's our website!
+
+We hope to independently add more functionality over winter break and when we have time, as this has been a fun project and we feel that it can be useful (for example when people want to know where the "locals" eat).
