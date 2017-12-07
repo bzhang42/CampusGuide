@@ -39,39 +39,39 @@ Related Locations
     <p style="text-align:left;" id="address">Address: {{ information["address"] }}</li>
 
     <div class="row">
-        <div class="col-sm-3" style="background-color:lavender;" data-toggle="tooltip" data-placement="bottom" title="What emotions are invoked here?"><b>Mood</b></div>
-        <div class="col-sm-1"></div>
-        <div class="col-sm-3" style="background-color:lavender;" data-toggle="tooltip" data-placement="bottom" title="How often do people come here?"><b>Frequency</b></div>
-        <div class="col-sm-1"></div>
-        <div class="col-sm-3" style="background-color:lavender;" data-toggle="tooltip" data-placement="bottom" title="How crowded does it get here?"><b>Popularity</b></div>
-        <div class="col-sm-1"></div>
+        <div class="col-sm-4" style="background-color:lavender; color:purple" data-toggle="tooltip" data-placement="bottom" title="What emotions are invoked here?"><b>Mood</b></div>
+
+        <div class="col-sm-4" style="background-color:lavender; color:purple" data-toggle="tooltip" data-placement="bottom" title="How often do people come here?"><b>Frequency</b></div>
+
+        <div class="col-sm-4" style="background-color:lavender; color:purple" data-toggle="tooltip" data-placement="bottom" title="How crowded does it get here?"><b>Popularity</b></div>
+
     </div>
     <div class="row">
-        <div class="col-sm-3" style="background-color:lavender;">{{ information["mood"] }}</div>
-        <div class="col-sm-1"></div>
-        <div class="col-sm-3" style="background-color:lavender;">{{ information["frequency"] }}</div>
-        <div class="col-sm-1"></div>
-        <div class="col-sm-3" style="background-color:lavender;">{{ information["popularity"] }}</div>
-        <div class="col-sm-1"></div>
+        <div class="col-sm-4" style="background-color:lavender; color:purple">{{ information["mood"] }}</div>
+
+        <div class="col-sm-4" style="background-color:lavender; color:purple">{{ information["frequency"] }}</div>
+
+        <div class="col-sm-4" style="background-color:lavender; color:purple">{{ information["popularity"] }}</div>
+
     </div>
 
     <p></p>
 
     <div class="row">
-        <div class="col-sm-3" style="background-color:lavender;" data-toggle="tooltip" data-placement="bottom" title="How conducive is this place to its purpose?"><b>Conducivity</b></div>
-        <div class="col-sm-1"></div>
-        <div class="col-sm-3" style="background-color:lavender;" data-toggle="tooltip" data-placement="bottom" title="How good would parties here be?"><b>Lit Score</b></div>
-        <div class="col-sm-1"></div>
-        <div class="col-sm-3" style="background-color:lavender;" data-toggle="tooltip" data-placement="bottom" title="How likely are you to go on a date here?"><b>Romantic Score</b></div>
-        <div class="col-sm-1"></div>
+        <div class="col-sm-4" style="background-color:lavender; color:purple" data-toggle="tooltip" data-placement="bottom" title="How conducive is this place to its purpose?"><b>Conducivity</b></div>
+
+        <div class="col-sm-4" style="background-color:lavender; color:purple" data-toggle="tooltip" data-placement="bottom" title="How good would parties here be?"><b>Lit Score</b></div>
+
+        <div class="col-sm-4" style="background-color:lavender; color:purple" data-toggle="tooltip" data-placement="bottom" title="How likely are you to go on a date here?"><b>Romantic Score</b></div>
+
     </div>
     <div class="row">
-        <div class="col-sm-3" style="background-color:lavender;">{{ information["conducivity"] }}</div>
-        <div class="col-sm-1"></div>
-        <div class="col-sm-3" style="background-color:lavender;">{{ information["litness"] }}</div>
-        <div class="col-sm-1"></div>
-        <div class="col-sm-3" style="background-color:lavender;">{{ information["love"] }}</div>
-        <div class="col-sm-1"></div>
+        <div class="col-sm-4" style="background-color:lavender; color:purple">{{ information["conducivity"] }}</div>
+
+        <div class="col-sm-4" style="background-color:lavender; color:purple">{{ information["litness"] }}</div>
+
+        <div class="col-sm-4" style="background-color:lavender; color:purple">{{ information["love"] }}</div>
+
     </div>
 
     <p id="demo"></p>
@@ -85,8 +85,8 @@ Related Locations
 
     <div class="container">
         <form action="/rate" method="get" id="rate">
-            <button type="submit" id="button1">Rate</button>
-            <button type="submit" id="button2" formaction="/location" formmethod="post">Add to Wishlist</button>
+            <button class="btn btn-primary" type="submit" id="button1">Rate</button>
+            <button class="btn btn-primary" type="submit" id="button2" formaction="/location" formmethod="post">Add to Wishlist</button>
         </form>
     </div>
 

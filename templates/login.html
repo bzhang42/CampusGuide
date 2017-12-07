@@ -8,6 +8,14 @@
     {#
         Allows user to input username and password to log in
     #}
+    <style>
+        body {
+            background-image: url("/static/pictures/harvard6.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+
     <form action="/login" method="post">
         <div class="form-group">
             <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text"/>
