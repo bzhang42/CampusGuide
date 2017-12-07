@@ -62,11 +62,8 @@ def index():
     """Shows latest location ratings and generates random location"""
 
     if request.method == "POST":
-
         return render_template("location.html", information=information)
-
     else:
-
         dining_info = db.execute("SELECT * FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 3")
 
         ratings = []
@@ -162,6 +159,15 @@ def login():
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
+
+
+@app.route("/search")
+@login_required
+def search():
+    query = request.args.get("q") + '%'
+    search_results = db.execute("SELECT id, name FROM locations WHERE name LIKE :name", name = query)
+    print(search_results)
+    return jsonify(search_results)
 
 
 @app.route("/logout")
@@ -354,6 +360,11 @@ def confirm_email(token):
         session["status"] = 1
         flash('You have confirmed your account. Thanks!', 'success')
     return redirect('/')
+
+
+@app.route("/the-project", methods = ["GET"])
+def information():
+    return render_template("team.html")
 
 
 @app.route("/rate/<location_id>", methods=["GET", "POST"])

@@ -2,6 +2,10 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 });
 
+window.onload = function() {
+  configure();
+};
+
 // Search database for typeahead's suggestions
 function search(query, syncResults, asyncResults)
 {
@@ -31,10 +35,17 @@ function configure()
         templates: {
             suggestion: Handlebars.compile(
                 "<div>" +
-                "{{place_name}}, {{admin_name1}}, {{postal_code}}" +
+                "{{ name }}" +
                 "</div>"
             )
         }
+    });
+
+    // Re-center map after place is selected from drop-down
+    $("#q").on("typeahead:selected", function(eventObject, suggestion, name) {
+        window.location.replace("/location/" + suggestion.id).success(function() {
+            window.reload();
+        })
     });
 
     // Hide info window when text box has focus
@@ -45,3 +56,5 @@ function configure()
     // Give focus to text box
     $("#q").focus();
 }
+
+

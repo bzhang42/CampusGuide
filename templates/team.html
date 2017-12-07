@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Rate
+{% endblock %}
+
+{% block main %}
+    <form action="/the-project" method="get">
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile">
+                <div class="img-box">
+                    <img src="/static/pictures/bill.jpg" class="img-responsive">
+                    <ul class="text-center">
+                        <a href="https://www.facebook.com/bill.wz?ref=br_rs"><li><i class="fa fa-facebook"></i></li></a>
+                        <a href="https://www.linkedin.com/in/bill-zhang-22a07b132/"><li><i class="fa fa-linkedin"></i></li></a>
+                    </ul>
+                </div>
+                <h1>Bill Zhang</h1>
+                <h2>Goon #1</h2>
+                <p>Applied Math</p>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile">
+                <div class="img-box">
+                    <img src="/static/pictures/daniel.jpg" class="img-responsive">
+                    <ul class="text-center">
+                        <a href="https://www.facebook.com/Daniel.Alexander.Bodea"><li><i class="fa fa-facebook"></i></li></a>
+                        <a href="https://www.linkedin.com/in/daniel-bodea-22b21813a/"><li><i class="fa fa-linkedin"></i></li></a>
+                    </ul>
+                </div>
+                <h1>Daniel Bodea</h1>
+                <h2>Goon #2</h2>
+                <p>gooning</p>
+            </div>
+        </div>
+    </form>
+{% endblock %}

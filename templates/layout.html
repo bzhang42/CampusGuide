@@ -10,6 +10,7 @@
 
         <!-- documentation at http://getbootstrap.com/docs/4.0/, alternative themes at https://bootswatch.com/4-alpha/ -->
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
         <link href="/static/styles.css" rel="stylesheet"/>
 
@@ -19,10 +20,13 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
         <!-- http://handlebarsjs.com/ -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+        <script src="https://cdn.rawgit.com/corejavascript/typeahead.js/master/dist/typeahead.jquery.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+
 
         <!-- app's own JavaScript -->
         <script src="/static/scripts.js"></script>
+        <script src="/static/textarea.js"></script>
 
         <title>CampusGuide: {% block title %}{% endblock %}</title>
 
@@ -41,10 +45,14 @@
                         <li class="nav-item"><a class="nav-link" href="/discover">Discover</a></li>
                         <li class="nav-item"><a class="nav-link" href="/contact-us">Contact Us</a></li>
                         <li class="nav-item"><a class="nav-link" href="/news">News</a></li>
-                        <form class="form-inline">
-                            <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+
+                        <form id="form">
+                            <div class="form-group">
+                            <label class="sr-only" for="q">Location</label>
+                            <span class="twitter-typeahead" style="position: relative; display: inline-block;"><input autocomplete="off" class="form-control tt-hint" type="text" readonly="" spellcheck="false" tabindex="-1" style="position: absolute; top: 0px; left: 0px; border-color: transparent; box-shadow: none; opacity: 1; background: none 0% 0% / auto repeat scroll padding-box padding-box rgb(255, 255, 255);" dir="ltr"><input autocomplete="off" class="form-control tt-input" id="q" placeholder="Location" type="text" spellcheck="false" dir="auto" aria-activedescendant="" aria-owns="q_listbox" role="combobox" aria-readonly="true" aria-autocomplete="list" style="position: relative; vertical-align: top; background-color: transparent;"><span role="status" aria-live="polite" style="position: absolute; padding: 0px; border: 0px; height: 1px; width: 1px; margin-bottom: -1px; margin-right: -1px; overflow: hidden; clip: rect(0px 0px 0px 0px); white-space: nowrap;"></span><pre aria-hidden="true" style="position: absolute; visibility: hidden; white-space: pre; font-family: -apple-system, system-ui, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: auto; text-transform: none;"></pre><div role="listbox" class="tt-menu" style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none;" aria-expanded="false"><div role="presentation" class="tt-dataset tt-dataset-0"></div></div></span>
+                            </div>
                         </form>
+
                     </ul>
                     <ul class="navbar-nav ml-auto mt-2">
                         <li class="nav-item dropdown">
@@ -78,7 +86,5 @@
         <main class="container p-5">
             {% block main %}{% endblock %}
         </main>
-
     </body>
-
 </html>

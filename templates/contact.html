@@ -8,13 +8,22 @@
     {#
         Allows user to submit suggestions for what should be rated
     #}
+
+    <script>
+        $(function(){
+				$('.normal').autosize();
+				$('.animated').autosize({append: "\n"});
+			});
+    </script>
+
     <form action="/contact-us" method="post">
         <div class="form-group">
-            <input autocomplete="off" autofocus class="form-control" name="name" placeholder="name of place" type="text"/>
+            <input autocomplete="off" autofocus class="form-control" name="name" placeholder="Location Name" type="text"/>
         </div>
-        <textarea name="suggestion" rows="10" cols="100">Type a description of your location here!</textarea>
-        <div>
-            <input type="file" name="picture" accept="image/*">
+        <div class="media-body">
+           <div class="form-group" style="padding:12px;">
+            <textarea class="form-control animated" placeholder="Why?"></textarea>
+           </div>
         </div>
         <button class="btn btn-primary" type="submit">Submit</button>
     </form>
