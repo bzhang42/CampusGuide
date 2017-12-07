@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Invalid page
+{% endblock %}
+
+{% block main %}
+    {#
+        Allows user to input username and password to log in
+    #}
+    <div class="request-error-page-content">
+    <div class="default-error-page">
+        <div class="message-container">
+                <h3 class="error-title">Whoops, looks like you didn't mean to go there! <br>
+                Page cannot be found or no longer exists</h3>
+                <h4 class="error-message">404 <span>|</span>Page Not found</h4>
+
+        </div>
+        <img src="/static/pictures/yale_error.png" class="error-image" alt="Error Image">
+        <div class="action-buttons">
+            <a class="btn btn-primary" title="Go to Previous Page" onclick="history.back();return false;" href="#">Back</a>
+            <div class=divider></div>
+            <a class="btn btn-primary" title="Return Home" href="/">Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

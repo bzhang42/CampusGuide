@@ -249,8 +249,26 @@ def login():
         return render_template("login.html")
 
 
+@app.route("/user/<user_id>")
+# @login_required
+# @check_confirmed
+def profile(user_id):
+
+    favorite_places = db.execute("SELECT DISTINCT name, href FROM wishes INNER JOIN locations ON wishes.location_id = locations.id WHERE user_id = :user_id", user_id = user_id)
+
+    try:
+        user = db.execute("SELECT username, registered_on FROM users WHERE id = :user_id", user_id = user_id)[0]
+    except:
+        return render_template("invalid.html")
+
+    num_rated = db.execute("SELECT COUNT(user_id) FROM ratings WHERE user_id = :user_id", user_id = user_id)[0]["COUNT(user_id)"]
+
+    return render_template("profile.html", user_id = user_id, favorite_places = favorite_places, username = user["username"], registered_on = user["registered_on"], ratings = num_rated)
+
+
 @app.route("/search")
 @login_required
+@check_confirmed
 def search():
     query = request.args.get("q") + '%'
     search_results = db.execute("SELECT id, name FROM locations WHERE name LIKE :name", name = query)

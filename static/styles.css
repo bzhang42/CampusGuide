@@ -289,3 +289,19 @@ i.red{
 				-moz-transition: height 0.2s;
 				transition: height 0.2s;
 			}
+
+.list-group{
+      display:inline-block;
+      background-color: #ffffff;
+ }
+
+.list-group .active {
+  background-color: red;
+  border-color: #000000;
+}
+
+.divider{
+    width:5px;
+    height:auto;
+    display:inline-block;
+}
