@@ -52,6 +52,7 @@ app.config.update(DEBUG=True,
 mail = Mail(app)
 
 # Configure CS50 Library to use SQLite database
+
 db = SQL("postgres://btcefetnvzupgp:545060efc226c0b3a6fa43aad9cd1758e66b59c204628f9aeb773142b8e9bd17@ec2-50-17-203-84.compute-1.amazonaws.com:5432/d36pmqvm7gjdjr")
 
 ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
@@ -326,7 +327,7 @@ def register():
         # Ensure password and confirmation match
         elif request.form.get("password") != request.form.get("confirmation"):
             return apology("password and confirmation must match", 400)
-
+        print("hey")
         # Store valid username
         username = request.form.get("username")
 
@@ -335,14 +336,14 @@ def register():
 
         # Store valid email
         email = request.form.get("email")
-
+        print("hey")
         # Calculate and store hash from password
         p_hash = generate_password_hash(password)
-
+        print("hey")
         # Put username and password information into database
         result = db.execute("INSERT INTO users (username, hash, email) VALUES (:username, :p_hash, :email)",
                    username=username, p_hash=str(p_hash), email=email)
-
+        print("hey")
         session["user_id"] = result
 
         flash("Registered!")

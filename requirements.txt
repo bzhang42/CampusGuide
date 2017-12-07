@@ -5,3 +5,4 @@ gunicorn
 Flask-Mail
 itsdangerous
 psycopg2
+werkzeug
