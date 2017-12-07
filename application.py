@@ -1,7 +1,7 @@
 import math
 from datetime import datetime
 from operator import itemgetter, attrgetter, methodcaller
-from statistics import mode
+from statistics import mode, StatisticsError
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify
 from flask_mail import Mail, Message
@@ -53,6 +53,7 @@ mail = Mail(app)
 
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///campusguide.db")
+# db = SQL("postgres://btcefetnvzupgp:545060efc226c0b3a6fa43aad9cd1758e66b59c204628f9aeb773142b8e9bd17@ec2-50-17-203-84.compute-1.amazonaws.com:5432/d36pmqvm7gjdjr")
 
 ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
@@ -329,7 +330,7 @@ def register():
         # Ensure password and confirmation match
         elif request.form.get("password") != request.form.get("confirmation"):
             return apology("password and confirmation must match", 400)
-
+        print("hey")
         # Store valid username
         username = request.form.get("username")
 
@@ -338,14 +339,14 @@ def register():
 
         # Store valid email
         email = request.form.get("email")
-
+        print("hey")
         # Calculate and store hash from password
         p_hash = generate_password_hash(password)
-
+        print("hey")
         # Put username and password information into database
         result = db.execute("INSERT INTO users (username, hash, email) VALUES (:username, :p_hash, :email)",
                    username=username, p_hash=str(p_hash), email=email)
-
+        print("hey")
         session["user_id"] = result
 
         flash("Registered!")
@@ -489,9 +490,10 @@ def discover():
     return render_template("discover.html")
 
 
-@app.route("/rate/<location_id>", methods=["GET", "POST"])
+@app.route("/rate/<r_location_id>", methods=["GET", "POST"])
 @login_required
-def rate(location_id):
+@check_confirmed
+def rate(r_location_id):
     if request.method == "POST":
         mood = request.form.get("mood")
         if not mood:
@@ -506,7 +508,6 @@ def rate(location_id):
             mood = 4
         else:
             mood = 5
-
         # dont need to error check because something will always be input
         frequency = request.form.get("frequency")
         busy = request.form.get("busy")
@@ -514,27 +515,21 @@ def rate(location_id):
         lit = request.form.get("lit")
         deviance = request.form.get("deviance")
         romance = request.form.get("romance")
-
         db.execute("INSERT INTO ratings (user_id, location_id, mood, frequency, popularity, conducivity, litness, deviance, love) VALUES (:user_id, :location_id, :mood, :frequency, :busy, :conducive, :lit, :deviance, :romance)",
-                    user_id = session["user_id"], location_id = location_id, mood = mood, frequency = frequency, busy = busy, conducive = conducive, lit = lit, deviance = deviance, romance = romance)
-
-        updateRatings(location_id)
-
+                    user_id = session["user_id"], location_id = r_location_id, mood = mood, frequency = frequency, busy = busy, conducive = conducive, lit = lit, deviance = deviance, romance = romance)
+        updateRatings(r_location_id)
         flash("Thank you for rating!")
 
         return redirect("/")
 
     if request.method == "GET":
-
-        informations = db.execute("SELECT * FROM locations WHERE id = :location_id", location_id=location_id)
-
-        tags = db.execute("SELECT * FROM tags WHERE location_id = :location_id AND (label_id = 3 OR label_id = 4)", location_id=location_id)
+        informations = db.execute("SELECT * FROM locations WHERE id = :location_id", location_id=r_location_id)
+        tags = db.execute("SELECT * FROM tags WHERE location_id = :location_id AND (label_id = 3 OR label_id = 4)", location_id=r_location_id)
 
         if len(tags) != 0:
             food = True
         else:
             food = False
-
         information = informations[0]
 
         return render_template("rate.html", information = information, food = food)
@@ -565,7 +560,9 @@ def updateRatings(location_id):
                     mult += 0.1
                     if diff_secs < 604800.0:
                         mult += 0.1
-
+        print(mult)
+        print("hi")
+        print("hi")
         moods.append(rating["mood"])
         frequencies.append(rating["frequency"] * mult)
         popularities.append(rating["popularity"] * mult)
@@ -575,7 +572,14 @@ def updateRatings(location_id):
         romances.append(rating["love"] * mult)
         weights.append(mult)
 
-    mood = mode(moods)
+    try:
+        mood = mode(moods)
+    except StatisticsError:
+        mood = 0
+    print(sum(weights))
+    print("hi")
+    print("hi")
+    print("hi")
     frequency = float("{0:.3f}".format(sum(frequencies) / sum(weights)))
     popularity = float("{0:.3f}".format(sum(popularities) / sum(weights)))
     conducivity = float("{0:.3f}".format(sum(conducivities) / sum(weights)))

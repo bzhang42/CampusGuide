@@ -1,3 +1,8 @@
 cs50
 Flask
 Flask-Session
+gunicorn
+Flask-Mail
+itsdangerous
+psycopg2
+werkzeug
