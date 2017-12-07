@@ -52,8 +52,8 @@ app.config.update(DEBUG=True,
 mail = Mail(app)
 
 # Configure CS50 Library to use SQLite database
-
-db = SQL("postgres://btcefetnvzupgp:545060efc226c0b3a6fa43aad9cd1758e66b59c204628f9aeb773142b8e9bd17@ec2-50-17-203-84.compute-1.amazonaws.com:5432/d36pmqvm7gjdjr")
+db = SQL("sqlite:///campusguide.db")
+# db = SQL("postgres://btcefetnvzupgp:545060efc226c0b3a6fa43aad9cd1758e66b59c204628f9aeb773142b8e9bd17@ec2-50-17-203-84.compute-1.amazonaws.com:5432/d36pmqvm7gjdjr")
 
 ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
@@ -534,7 +534,15 @@ def updateRatings(location_id):
 
     for rating in ratings:
         mult = 0.0
-        difference = time1 - datetime.datetime.strptime(rating["datetime"], '%Y-%m-%d %H:%M:%S')
+        print(mult)
+        print("hi")
+        print("hi")
+        print("hi")
+        print("hi")
+        difference = time1 - datetime.datetime.strptime(rating["datetime"], "%Y-%m-%d %H:%M:%S")
+        print(difference)
+        print("hi")
+        print("hi")
         diff_secs = difference.total_seconds()
         if diff_secs < 31536000.0:
             mult += 0.5
@@ -544,7 +552,9 @@ def updateRatings(location_id):
                     mult += 0.1
                     if diff_secs < 604800.0:
                         mult += 0.1
-
+        print(mult)
+        print("hi")
+        print("hi")
         moods.append(rating["mood"])
         frequencies.append(rating["frequency"] * mult)
         popularities.append(rating["popularity"] * mult)
@@ -558,6 +568,10 @@ def updateRatings(location_id):
         mood = mode(moods)
     except StatisticsError:
         mood = 0
+    print(sum(weights))
+    print("hi")
+    print("hi")
+    print("hi")
     frequency = float("{0:.3f}".format(sum(frequencies) / sum(weights)))
     popularity = float("{0:.3f}".format(sum(popularities) / sum(weights)))
     conducivity = float("{0:.3f}".format(sum(conducivities) / sum(weights)))
