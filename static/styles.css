@@ -1,37 +1,45 @@
 .btn-primary {
+    /*background crimson for all buttons*/
     background-color: crimson !important;
 }
 
 .no-borders {
+    /*excepts certain images to not have borders*/
     padding:0px;
     border:0px;
 }
 
 img {
-   padding:1px;
-   border:1px solid #021a40;
+    /*places borders and padding around images*/
+    padding:1px;
+    border:1px solid #021a40;
 }
 
 .sticky {
-  position: sticky;
-  top: 0.1px; /* When the element reaches top: 10px, it becomes fixed. */
-  z-index: 100;
+    /*makes navbar stick to the top and stay in front*/
+    position: sticky;
+    top: 0.1px; /* When the element reaches top: 0.1px, it becomes fixed. */
+    z-index: 100;
 }
 
 a {
+    /*turns hyperlinked text crimson*/
     color: crimson;
 }
 
 a:hover {
+    /*turns hyperlinked text a darker shade of crimson upon hovering*/
     color: #a30f2d;
 }
 
 .home_icon {
+    /*harvard logo in navbar*/
     display: inline-block;
     width: 70px;
 }
 
 #button1 , #button2 {
+    /*displays pair of buttons next to each other*/
     display:inline-block;
     text-align: left;
 }

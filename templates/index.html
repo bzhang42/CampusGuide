@@ -5,10 +5,18 @@
 {% endblock %}
 
 {% block main %}
-
+{#
+    Lays out home page with random location, then tables of top 5 locations
+#}
 <div class = "row">
+    {#
+        splits rows into two parts
+    #}
     <div class="col-md-6">
         <h1 style="text-align:left;">
+            {#
+                dynamically generates URL for hyperlink
+            #}
             <a href="{{ rand_location['href'] }}">{{ rand_location["name"] }}</a>
         </h1>
 
@@ -22,7 +30,9 @@
 
         <p style="text-align:left;" id="address">Address: {{ rand_location["address"] }}</li>
     </div>
-
+    {#
+        Radio form with emojis
+    #}
     <div class="col-md-6" style="background-color:#fefbd8;">
         <p></p>
         <form action="/" method="post">
@@ -48,6 +58,9 @@
                 <img class="no-borders" src="/static/pictures/tear.png" width="75%">
             </label>
             <br>
+            {#
+                Sliders with values 1 to 5 and questions for user to answer
+            #}
             <div>
                 How often do you go? <br>
                 <div id="slidecontainer">
@@ -107,7 +120,9 @@
 </div>
 
 <p></p>
-
+{#
+    tables containing top five entries for categories
+#}
 <div class = "row">
     <div class="col-md-6">
         <table class="table table-striped">

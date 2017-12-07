@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block main %}
+{#
+    displays account information, including username, email, join date, and change password button
+#}
     <form action="/account" method="post">
         <div class="form-group">
             Username: <input autocomplete="off" autofocus class="form-control" name="username" placeholder="{{ username }}" type="text" disabled/>
