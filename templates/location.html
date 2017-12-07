@@ -38,6 +38,10 @@ Related Locations
 
     <p style="text-align:left;" id="address">Address: {{ information["address"] }}</li>
 
+    {#
+        displays aggregate ratings with columns and tooltips
+    #}
+
     <div class="row">
         <div class="col-sm-4" style="background-color:lavender; color:purple" data-toggle="tooltip" data-placement="bottom" title="What emotions are invoked here?"><b>Mood</b></div>
 
@@ -76,6 +80,9 @@ Related Locations
 
     <p id="demo"></p>
 
+    {#
+        dynamically generates button actions based on the page
+    #}
     <script type="text/javascript">
     window.onload = function() {
         document.getElementById("rate").action = "/rate/" + '{{ information["id"] }}';
@@ -83,6 +90,9 @@ Related Locations
     }
     </script>
 
+    {#
+        holds two buttons with the latter using formaction and formmethod to specify different action
+    #}
     <div class="container">
         <form action="/rate" method="get" id="rate">
             <button class="btn btn-primary" type="submit" id="button1">Rate</button>

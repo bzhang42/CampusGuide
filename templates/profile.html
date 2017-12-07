@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block main %}
+{#
+    displays profile with picture, dynamically generated number of ratings, and wishlist
+#}
 <form action="/user/{{ user_id }}" method="get">
 
     <h1>{{username}}'s profile</h1>
@@ -20,6 +23,9 @@
             <h4>Join Date</h4>
             <h5>{{join_date}}</h5>
             <br>
+            {#
+                scrollable table of locations in wishlist
+            #}
             <div class="list-group center-block">
                 <a class="list-group-item active sticky">Wishlist</a>
                 {% for place in favorite_places %}

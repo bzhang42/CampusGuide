@@ -41,7 +41,7 @@ def login_required(f):
 
 
 def check_confirmed(f):
-    "hi"
+    """Checks to see if user has confirmed email."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if db.execute("SELECT confirmed FROM users WHERE :user_id", user_id = session.get("user_id"))[0]['confirmed'] == 0:
@@ -49,83 +49,3 @@ def check_confirmed(f):
             return redirect("/unconfirmed")
         return f(*args, **kwargs)
     return decorated_function
-
-
-def lookup(symbol):
-    """Look up quote for symbol."""
-
-    # reject symbol if it starts with caret
-    if symbol.startswith("^"):
-        return None
-
-    # Reject symbol if it contains comma
-    if "," in symbol:
-        return None
-
-    # Query Yahoo for quote
-    # http://stackoverflow.com/a/21351911
-    try:
-
-        # GET CSV
-        url = f"http://download.finance.yahoo.com/d/quotes.csv?f=snl1&s={symbol}"
-        webpage = urllib.request.urlopen(url)
-
-        # Read CSV
-        datareader = csv.reader(webpage.read().decode("utf-8").splitlines())
-
-        # Parse first row
-        row = next(datareader)
-
-        # Ensure stock exists
-        try:
-            price = float(row[2])
-        except:
-            return None
-
-        # Return stock's name (as a str), price (as a float), and (uppercased) symbol (as a str)
-        return {
-            "name": row[1],
-            "price": price,
-            "symbol": row[0].upper()
-        }
-
-    except:
-        pass
-
-    # Query Alpha Vantage for quote instead
-    # https://www.alphavantage.co/documentation/
-    try:
-
-        # GET CSV
-        url = f"https://www.alphavantage.co/query?apikey=NAJXWIA8D6VN6A3K&datatype=csv&function=TIME_SERIES_INTRADAY&interval=1min&symbol={symbol}"
-        webpage = urllib.request.urlopen(url)
-
-        # Parse CSV
-        datareader = csv.reader(webpage.read().decode("utf-8").splitlines())
-
-        # Ignore first row
-        next(datareader)
-
-        # Parse second row
-        row = next(datareader)
-
-        # Ensure stock exists
-        try:
-            price = float(row[4])
-        except:
-            return None
-
-        # Return stock's name (as a str), price (as a float), and (uppercased) symbol (as a str)
-        return {
-            "name": symbol.upper(), # for backward compatibility with Yahoo
-            "price": price,
-            "symbol": symbol.upper()
-        }
-
-    except:
-        return None
-
-
-def usd(value):
-    """Formats value as USD."""
-    return f"${value:,.2f}"
