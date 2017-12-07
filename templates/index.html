@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block main %}
+
 <div class = "row">
     <div class="col-md-6">
         <h1 style="text-align:left;">
@@ -28,23 +29,23 @@
             What is your reaction to this place? <br>
             <label class="home_icon">
                 <input type="radio" name="mood" value="happy"/>
-                <img src="/static/pictures/happy.png" width="75%">
+                <img class="no-borders" src="/static/pictures/happy.png" width="75%">
             </label>
             <label class="home_icon">
                 <input type="radio" name="mood" value="neutral"/>
-                <img src="/static/pictures/neutral.png" width="75%">
+                <img class="no-borders" src="/static/pictures/neutral.png" width="75%">
             </label>
             <label class="home_icon">
                 <input type="radio" name="mood" value="unhappy"/>
-                <img src="/static/pictures/frowning.png" width="75%">
+                <img class="no-borders" src="/static/pictures/frowning.png" width="75%">
             </label>
             <label class="home_icon">
                 <input type="radio" name="mood" value="angry" />
-                <img src="/static/pictures/angry_face.png" width="75%">
+                <img class="no-borders" src="/static/pictures/angry_face.png" width="75%">
             </label>
             <label class="home_icon">
                 <input type="radio" name="mood" value="sad"/>
-                <img src="/static/pictures/tear.png" width="75%">
+                <img class="no-borders" src="/static/pictures/tear.png" width="75%">
             </label>
             <br>
             <div>
@@ -57,35 +58,44 @@
             <div>
                 How busy is this location?<br>
                 <div id="slidecontainer">
-                    <img src="/static/pictures/empty.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="busy"> <img src="/static/pictures/feet.png" width="10%">
+                    <img class="no-borders" src="/static/pictures/empty.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="busy"> <img class="no-borders" src="/static/pictures/feet.png" width="10%">
+                </div>
+            </div>
+            <br>
+            {% if food %}
+                 <div>
+                    How tasty is the food here?<br>
+                    <div id="slidecontainer">
+                        <img class="no-borders" src="/static/pictures/vomit.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="conducive"> <img class="no-borders" src="/static/pictures/heart.png" width="10%">
+                    </div>
+                </div>
+            {% else %}
+                <div>
+                    How conducive is this location to studying?<br>
+                    <div id="slidecontainer">
+                        <img class="no-borders" src="/static/pictures/not_conducive.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="conducive"> <img class="no-borders" src="/static/pictures/v_conducive.png" width="10%">
+                    </div>
+                </div>
+            {% endif %}
+            <br>
+            <div>
+                How lit can this location get?<br>
+                <div id="slidecontainer">
+                    <img class="no-borders" src="/static/pictures/cobweb.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="lit"> <img class="no-borders" src="/static/pictures/lit.png" width="10%">
                 </div>
             </div>
             <br>
             <div>
-                How conducive is this location to its intended purpose?<br>
+                How good is this location compared to others like it?<br>
                 <div id="slidecontainer">
-                    <img src="/static/pictures/not_conducive.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="conducive"> <img src="/static/pictures/v_conducive.png" width="10%">
+                    <img class="no-borders" src="/static/pictures/bad_deviance.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="deviance"> <img class="no-borders" src="/static/pictures/good_deviance.png" width="10%">
                 </div>
             </div>
             <br>
             <div>
-                How poppin is this location?<br>
+                How likely would you go on a date here?<br>
                 <div id="slidecontainer">
-                    <img src="/static/pictures/cobweb.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="lit"> <img src="/static/pictures/lit.png" width="10%">
-                </div>
-            </div>
-            <br>
-            <div>
-                How good is this location compared to other locations on campus?<br>
-                <div id="slidecontainer">
-                    <img src="/static/pictures/bad_deviance.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="deviance"> <img src="/static/pictures/good_deviance.png" width="10%">
-                </div>
-            </div>
-            <br>
-            <div>
-                How romantic is this location?<br>
-                <div id="slidecontainer">
-                    <img src="/static/pictures/no_love.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="romance"> <img src="/static/pictures/true_love.png" width="10%">
+                    <img class="no-borders" src="/static/pictures/no_love.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="romance"> <img class="no-borders" src="/static/pictures/true_love.png" width="10%">
                 </div>
             </div>
             <br>

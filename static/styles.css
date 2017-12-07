@@ -1,3 +1,23 @@
+.btn-primary {
+    background-color: crimson !important;
+}
+
+.no-borders {
+    padding:0px;
+    border:0px;
+}
+
+img {
+   padding:1px;
+   border:1px solid #021a40;
+}
+
+.sticky {
+  position: sticky;
+  top: 0.1px; /* When the element reaches top: 10px, it becomes fixed. */
+  z-index: 100;
+}
+
 a {
     color: crimson;
 }
@@ -23,6 +43,10 @@ nav .navbar-brand
 }
 
 /* colors for brand */
+nav .navbar-brand .white
+{
+    color: white;
+}
 nav .navbar-brand .blue
 {
     color: #537fbe;

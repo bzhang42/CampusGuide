@@ -142,7 +142,14 @@ def index():
         dating_info = sorted(dating_info, key=itemgetter("misc", "name"), reverse=True)
         dating_info = dating_info[0:5]
 
-        return render_template("index.html", rand_location = rand_location, dining_info = dining_info, restaurant_info = restaurant_info, housing_info = housing_info, dating_info = dating_info)
+        tags = db.execute("SELECT * FROM tags WHERE location_id = :location_id AND (label_id = 3 OR label_id = 4)", location_id=g_location_id)
+
+        if len(tags) != 0:
+            food = True
+        else:
+            food = False
+
+        return render_template("index.html", food = food, rand_location = rand_location, dining_info = dining_info, restaurant_info = restaurant_info, housing_info = housing_info, dating_info = dating_info)
 
     # # Pulls out latest 5 entries from ratings table
     # latest = db.execute("SELECT * FROM (SELECT * FROM ratings ORDER BY datetime DESC LIMIT 0,5) ORDER BY datetime DESC")
@@ -502,7 +509,19 @@ def rate(location_id):
         return redirect("/")
 
     if request.method == "GET":
-        return render_template("rate.html", location_id = location_id)
+
+        informations = db.execute("SELECT * FROM locations WHERE id = :location_id", location_id=location_id)
+
+        tags = db.execute("SELECT * FROM tags WHERE location_id = :location_id AND (label_id = 3 OR label_id = 4)", location_id=location_id)
+
+        if len(tags) != 0:
+            food = True
+        else:
+            food = False
+
+        information = informations[0]
+
+        return render_template("rate.html", information = information, food = food)
 
 
 def updateRatings(location_id):
