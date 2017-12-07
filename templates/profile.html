@@ -7,18 +7,27 @@
 {% block main %}
 <form action="/user/{{ user_id }}" method="get">
 
-    <img src="/static/pictures/generic_prof.jpg" width=25%>
-    <div class=container>
-<div class="list-group">
-    <a class="list-group-item active"> Favorites</a>
-    {% for place in favorite_places %}
-    <a href="{{ place.href }}" class="list-group-item list-group-item-action">{{ place.name }}</a>
-    {% endfor %}
+    <h1>{{username}}'s profile</h1>
+    <br>
+    <div class="row">
+        <div class="col">
+            <img src="/static/pictures/generic_prof.jpg" width="75%">
+        </div>
+        <div class="col">
+            <h4>Ratings Given</h4>
+            <h5>{{ratings}}</h5>
+            <br>
+            <h4>Join Date</h4>
+            <h5>{{join_date}}</h5>
+            <br>
+            <div class="list-group center-block">
+                <a class="list-group-item active sticky">Wishlist</a>
+                {% for place in favorite_places %}
+                <a href="{{ place.href }}" class="list-group-item list-group-item-action">{{ place.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-</div>
-<p>{{ratings}}</p>
-<p>{{registered_on}}</p>
-<p>{{username}}</p>
 </form>
 
 {% endblock %}

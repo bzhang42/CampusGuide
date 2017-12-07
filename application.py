@@ -1,5 +1,5 @@
 import math
-import datetime
+from datetime import datetime
 from operator import itemgetter, attrgetter, methodcaller
 from statistics import mode
 from cs50 import SQL
@@ -261,9 +261,12 @@ def profile(user_id):
     except:
         return render_template("invalid.html")
 
+    join_date = datetime.strptime(user["registered_on"], '%Y-%m-%d %H:%M:%S')
+    join_date = join_date.strftime('%B %d, %Y')
+
     num_rated = db.execute("SELECT COUNT(user_id) FROM ratings WHERE user_id = :user_id", user_id = user_id)[0]["COUNT(user_id)"]
 
-    return render_template("profile.html", user_id = user_id, favorite_places = favorite_places, username = user["username"], registered_on = user["registered_on"], ratings = num_rated)
+    return render_template("profile.html", user_id = user_id, favorite_places = favorite_places, username = user["username"], join_date = join_date, ratings = num_rated)
 
 
 @app.route("/search")
@@ -473,6 +476,19 @@ def information():
     return render_template("team.html")
 
 
+@app.route("/discover", methods = ["GET"])
+def discover():
+    first_row = {}
+    all_labels = []
+    for item in db.execute("SELECT id, label FROM labels"):
+        label_id = item['id']
+        label_name = item['label']
+        if label_id in (1, 2, 3):
+            first_row[label_name] = sorted(db.execute("SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = :label_id", label_id = label_id), key = itemgetter("name"))
+
+    return render_template("discover.html")
+
+
 @app.route("/rate/<location_id>", methods=["GET", "POST"])
 @login_required
 def rate(location_id):
@@ -527,7 +543,7 @@ def rate(location_id):
 def updateRatings(location_id):
     ratings = db.execute("SELECT * FROM ratings WHERE location_id = :location_id", location_id=location_id)
 
-    time1 = datetime.datetime.now()
+    time1 = datetime.now()
     moods = []
     frequencies = []
     popularities = []
@@ -539,7 +555,7 @@ def updateRatings(location_id):
 
     for rating in ratings:
         mult = 0.0
-        difference = time1 - datetime.datetime.strptime(rating["datetime"], '%Y-%m-%d %H:%M:%S')
+        difference = time1 - datetime.strptime(rating["datetime"], '%Y-%m-%d %H:%M:%S')
         diff_secs = difference.total_seconds()
         if diff_secs < 31536000.0:
             mult += 0.5
@@ -569,11 +585,6 @@ def updateRatings(location_id):
 
     db.execute("UPDATE locations SET mood = :mood, frequency = :frequency, popularity = :popularity, conducivity = :conducivity, litness = :litness, deviance = :deviance, love = :love WHERE id = :location_id",
                 mood=mood, frequency=frequency, popularity=popularity, conducivity=conducivity, litness=litness, deviance=deviance, love=love, location_id=location_id)
-
-# @app.route('/location/<location_id>')
-# @login_required
-# def location(location_id):
-#     return apology("nothing here big boy")
 
 
 @app.route('/resend')

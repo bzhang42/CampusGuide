@@ -291,12 +291,15 @@ i.red{
 			}
 
 .list-group{
-      display:inline-block;
+    width: 350px;
+    height: 330px;
+    overflow-y: auto;
       background-color: #ffffff;
+      color: white;
  }
 
 .list-group .active {
-  background-color: red;
+  background-color: crimson;
   border-color: #000000;
 }
 
@@ -304,4 +307,20 @@ i.red{
     width:5px;
     height:auto;
     display:inline-block;
+}
+
+.center-block {
+   margin-left:auto;
+   margin-right:auto;
+   display:block;
+}
+
+.text-center {
+   text-align:center
+}
+
+.avatar {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
 }
