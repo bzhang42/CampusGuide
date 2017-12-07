@@ -1,5 +1,7 @@
 import math
+import datetime
 from operator import itemgetter, attrgetter, methodcaller
+from statistics import mode
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify
 from flask_mail import Mail, Message
@@ -54,29 +56,93 @@ db = SQL("sqlite:///campusguide.db")
 
 ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
+g_location_id = 15
 
 @app.route("/", methods=["GET", "POST"])
-@login_required
-@check_confirmed
 def index():
     """Shows latest location ratings and generates random location"""
 
+    global g_location_id
+
     if request.method == "POST":
-        return render_template("location.html", information=information)
+
+        mood = request.form.get("mood")
+        if not mood:
+            return apology("please answer every question")
+        if mood == 'happy':
+            mood = 1
+        elif mood == 'neutral':
+            mood = 2
+        elif mood == "unhappy":
+            mood = 3
+        elif mood == "sad":
+            mood = 4
+        else:
+            mood = 5
+
+        # dont need to error check because something will always be input
+        frequency = request.form.get("frequency")
+        busy = request.form.get("busy")
+        conducive = request.form.get("conducive")
+        lit = request.form.get("lit")
+        deviance = request.form.get("deviance")
+        romance = request.form.get("romance")
+
+        if session.get("user_id") is None:
+            user_id = 0
+        else:
+            user_id = session["user_id"]
+
+        db.execute("INSERT INTO ratings (user_id, location_id, mood, frequency, popularity, conducivity, litness, deviance, love) VALUES (:user_id, :location_id, :mood, :frequency, :busy, :conducive, :lit, :deviance, :romance)",
+                    user_id = user_id, location_id = g_location_id, mood = mood, frequency = frequency, busy = busy, conducive = conducive, lit = lit, deviance = deviance, romance = romance)
+
+        updateRatings(g_location_id)
+
+        flash("Thank you for rating!")
+
+        return redirect("/")
+
     else:
+
+        locations = db.execute("SELECT * FROM locations WHERE description IS NOT NULL ORDER BY RANDOM() LIMIT 1")
+
+        rand_location = locations[0]
+
+        g_location_id = rand_location["id"]
+
         dining_info = db.execute("SELECT * FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 3")
 
-        ratings = []
-
-        i = 0
-
         for location in dining_info:
-            location["misc"] = diningRate(location)
+            location["misc"] = float("{0:.3f}".format(diningRate(location)))
 
         dining_info = sorted(dining_info, key=itemgetter("misc", "name"), reverse=True)
         dining_info = dining_info[0:5]
 
-        return render_template("index.html", dining_info = dining_info)
+        restaurant_info = db.execute("SELECT * FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 4")
+
+        for location in restaurant_info:
+            location["misc"] = float("{0:.3f}".format(restaurantRate(location)))
+
+        restaurant_info = sorted(restaurant_info, key=itemgetter("misc", "name"), reverse=True)
+        restaurant_info = restaurant_info[0:5]
+
+        housing_info = db.execute("SELECT * FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 5")
+
+        for location in housing_info:
+            location["misc"] = float("{0:.3f}".format(housingRate(location)))
+
+        housing_info = sorted(housing_info, key=itemgetter("misc", "name"), reverse=True)
+        housing_info = housing_info[0:5]
+
+        dating_info = db.execute("SELECT * FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 8")
+
+        for location in dating_info:
+            location["misc"] = float("{0:.3f}".format(datingRate(location)))
+
+        dating_info = sorted(dating_info, key=itemgetter("misc", "name"), reverse=True)
+        dating_info = dating_info[0:5]
+
+        return render_template("index.html", rand_location = rand_location, dining_info = dining_info, restaurant_info = restaurant_info, housing_info = housing_info, dating_info = dating_info)
 
     # # Pulls out latest 5 entries from ratings table
     # latest = db.execute("SELECT * FROM (SELECT * FROM ratings ORDER BY datetime DESC LIMIT 0,5) ORDER BY datetime DESC")
@@ -89,11 +155,26 @@ def index():
 
     # # renders index.html page with correctly formatted values
     # return render_template("index.html", latest=latest, r_location=r_location)
+
 def diningRate(location):
-    rating = (location["popularity"] + location["conducivity"] + (0.2 * (location["love"] + location["litness"]))) * (math.sqrt(location["deviance"] / 3))
+    rating = (location["popularity"] + location["conducivity"] + (0.2 * (location["love"] + location["litness"]))) * (math.sqrt(location["deviance"] / 3.0))
     rating = rating / (1.2)
     return rating
 
+def restaurantRate(location):
+    rating = (location["popularity"] + location["conducivity"] + (0.6 * location["love"]) + (0.4 * location["litness"])) * (math.sqrt(location["deviance"] / 3.0))
+    rating = rating / (1.5)
+    return rating
+
+def housingRate(location):
+    rating = (location["conducivity"] + location["litness"] + (0.2 * (location["popularity"] + location["love"]))) * (math.sqrt(location["deviance"] / 3.0))
+    rating = rating / (1.2)
+    return rating
+
+def datingRate(location):
+    rating = (location["love"] + (0.6 * location["conducivity"]) + (0.2 * location["litness"]) - (0.2 * (location["popularity"] - 3))) * (math.sqrt(location["deviance"] / 3.0))
+    rating = rating / (1.0)
+    return rating
 
 
 @app.route("/location/<location_id>", methods=["GET", "POST"])
@@ -393,12 +474,64 @@ def rate(location_id):
         deviance = request.form.get("deviance")
         romance = request.form.get("romance")
 
-        db.execute("INSERT INTO ratings (user_id, location_id, mood, frequency, popularity, conducivity, litness, deviance, love) VALUES (:user_id, :location_id, :mood, :frequency, :busy, :conducive, :lit, :deviance, :romance)", user_id = session["user_id"], location_id = location_id, mood = mood, frequency = frequency, busy = busy, conducive = conducive, lit = lit, deviance = deviance, romance = romance)
+        db.execute("INSERT INTO ratings (user_id, location_id, mood, frequency, popularity, conducivity, litness, deviance, love) VALUES (:user_id, :location_id, :mood, :frequency, :busy, :conducive, :lit, :deviance, :romance)",
+                    user_id = session["user_id"], location_id = location_id, mood = mood, frequency = frequency, busy = busy, conducive = conducive, lit = lit, deviance = deviance, romance = romance)
+
+        updateRatings(location_id)
+
+        flash("Thank you for rating!")
+
         return redirect("/")
 
     if request.method == "GET":
         return render_template("rate.html", location_id = location_id)
 
+
+def updateRatings(location_id):
+    ratings = db.execute("SELECT * FROM ratings WHERE location_id = :location_id", location_id=location_id)
+
+    time1 = datetime.datetime.now()
+    moods = []
+    frequencies = []
+    popularities = []
+    conducivities = []
+    litnesses = []
+    deviances = []
+    romances = []
+    weights = []
+
+    for rating in ratings:
+        mult = 0.0
+        difference = time1 - datetime.datetime.strptime(rating["datetime"], '%Y-%m-%d %H:%M:%S')
+        diff_secs = difference.total_seconds()
+        if diff_secs < 31536000.0:
+            mult += 0.5
+            if diff_secs < 15768000.0:
+                mult += 0.3
+                if diff_secs < 2628000.0:
+                    mult += 0.1
+                    if diff_secs < 604800.0:
+                        mult += 0.1
+
+        moods.append(rating["mood"])
+        frequencies.append(rating["frequency"] * mult)
+        popularities.append(rating["popularity"] * mult)
+        conducivities.append(rating["conducivity"] * mult)
+        litnesses.append(rating["litness"] * mult)
+        deviances.append(rating["deviance"] * mult)
+        romances.append(rating["love"] * mult)
+        weights.append(mult)
+
+    mood = mode(moods)
+    frequency = float("{0:.3f}".format(sum(frequencies) / sum(weights)))
+    popularity = float("{0:.3f}".format(sum(popularities) / sum(weights)))
+    conducivity = float("{0:.3f}".format(sum(conducivities) / sum(weights)))
+    litness = float("{0:.3f}".format(sum(litnesses) / sum(weights)))
+    deviance = float("{0:.3f}".format(sum(deviances) / sum(weights)))
+    love = float("{0:.3f}".format(sum(romances) / sum(weights)))
+
+    db.execute("UPDATE locations SET mood = :mood, frequency = :frequency, popularity = :popularity, conducivity = :conducivity, litness = :litness, deviance = :deviance, love = :love WHERE id = :location_id",
+                mood=mood, frequency=frequency, popularity=popularity, conducivity=conducivity, litness=litness, deviance=deviance, love=love, location_id=location_id)
 
 # @app.route('/location/<location_id>')
 # @login_required

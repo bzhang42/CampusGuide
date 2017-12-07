@@ -7,45 +7,98 @@
 {% block main %}
 <div class = "row">
     <div class="col-md-6">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th colspan="2">
-                         <h4>TOP DINING HALLS</h4>
-                    </th>
-                </tr>
-                <tr>
-                    <th>
-                        Name
-                    </th>
+        <h1 style="text-align:left;">
+            <a href="{{ rand_location['href'] }}">{{ rand_location["name"] }}</a>
+        </h1>
 
-                    <th>
-                        Rating
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for location in dining_info %}
-                {#
-                    Iterates through rows of table
-                #}
-                    <tr>
-                        {#
-                        Fill in table with relevant holdings information
-                        #}
-                        <td>
-                            {{ location["name"] }}
-                        </td>
+        <p style="text-align:left;">{{ rand_location["description"] }}</p>
 
-                        <td>
-                            {{ location["misc"] }}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <p></p>
+
+        {{ rand_location["photo"]|safe }}
+
+        <p></p>
+
+        <p style="text-align:left;" id="address">Address: {{ rand_location["address"] }}</li>
     </div>
 
+    <div class="col-md-6" style="background-color:#fefbd8;">
+        <p></p>
+        <form action="/" method="post">
+            What is your reaction to this place? <br>
+            <label class="home_icon">
+                <input type="radio" name="mood" value="happy"/>
+                <img src="/static/pictures/happy.png" width="75%">
+            </label>
+            <label class="home_icon">
+                <input type="radio" name="mood" value="neutral"/>
+                <img src="/static/pictures/neutral.png" width="75%">
+            </label>
+            <label class="home_icon">
+                <input type="radio" name="mood" value="unhappy"/>
+                <img src="/static/pictures/frowning.png" width="75%">
+            </label>
+            <label class="home_icon">
+                <input type="radio" name="mood" value="angry" />
+                <img src="/static/pictures/angry_face.png" width="75%">
+            </label>
+            <label class="home_icon">
+                <input type="radio" name="mood" value="sad"/>
+                <img src="/static/pictures/tear.png" width="75%">
+            </label>
+            <br>
+            <div>
+                How often do you go? <br>
+                <div id="slidecontainer">
+                    never gone <input type="range" min="1" max="5" value="3" step="1" class="slider" name="frequency"s> live there
+                </div>
+            </div>
+            <br>
+            <div>
+                How busy is this location?<br>
+                <div id="slidecontainer">
+                    <img src="/static/pictures/empty.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="busy"> <img src="/static/pictures/feet.png" width="10%">
+                </div>
+            </div>
+            <br>
+            <div>
+                How conducive is this location to its intended purpose?<br>
+                <div id="slidecontainer">
+                    <img src="/static/pictures/not_conducive.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="conducive"> <img src="/static/pictures/v_conducive.png" width="10%">
+                </div>
+            </div>
+            <br>
+            <div>
+                How poppin is this location?<br>
+                <div id="slidecontainer">
+                    <img src="/static/pictures/cobweb.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="lit"> <img src="/static/pictures/lit.png" width="10%">
+                </div>
+            </div>
+            <br>
+            <div>
+                How good is this location compared to other locations on campus?<br>
+                <div id="slidecontainer">
+                    <img src="/static/pictures/bad_deviance.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="deviance"> <img src="/static/pictures/good_deviance.png" width="10%">
+                </div>
+            </div>
+            <br>
+            <div>
+                How romantic is this location?<br>
+                <div id="slidecontainer">
+                    <img src="/static/pictures/no_love.png" width="10%"> <input type="range" min="1" max="5" value="3" step="1" class="slider" name="romance"> <img src="/static/pictures/true_love.png" width="10%">
+                </div>
+            </div>
+            <br>
+
+            <button class="btn btn-primary" type="submit">Rate!</button>
+        </form>
+        <p></p>
+    </div>
+</div>
+
+<p></p>
+
+<div class = "row">
     <div class="col-md-6">
         <table class="table table-striped">
             <thead>
@@ -74,7 +127,131 @@
                         Fill in table with relevant holdings information
                         #}
                         <td>
-                            {{ location["name"] }}
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+
+                        <td>
+                            {{ location["misc"] }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                         <h4>TOP RESTAURANTS</h4>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+
+                    <th>
+                        Rating
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in restaurant_info %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        {#
+                        Fill in table with relevant holdings information
+                        #}
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+
+                        <td>
+                            {{ location["misc"] }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class = "row">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                         <h4>TOP FRESHMAN DORMS</h4>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+
+                    <th>
+                        Rating
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in housing_info %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        {#
+                        Fill in table with relevant holdings information
+                        #}
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+
+                        <td>
+                            {{ location["misc"] }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                         <h4>TOP DATE SPOTS</h4>
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+
+                    <th>
+                        Rating
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in dating_info %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        {#
+                        Fill in table with relevant holdings information
+                        #}
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
                         </td>
 
                         <td>
