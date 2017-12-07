@@ -1,7 +1,7 @@
 import math
 import datetime
 from operator import itemgetter, attrgetter, methodcaller
-from statistics import mode
+from statistics import mode, StatisticsError
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify
 from flask_mail import Mail, Message
@@ -553,7 +553,10 @@ def updateRatings(location_id):
         romances.append(rating["love"] * mult)
         weights.append(mult)
 
-    mood = mode(moods)
+    try:
+        mood = mode(moods)
+    except StatisticsError:
+        mood = 0
     frequency = float("{0:.3f}".format(sum(frequencies) / sum(weights)))
     popularity = float("{0:.3f}".format(sum(popularities) / sum(weights)))
     conducivity = float("{0:.3f}".format(sum(conducivities) / sum(weights)))
