@@ -10,7 +10,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, login_required, check_confirmed, lookup, usd
+from helpers import apology, login_required, check_confirmed
 from itsdangerous import URLSafeTimedSerializer
 
 # Configure application
@@ -25,8 +25,6 @@ if app.config["DEBUG"]:
         response.headers["Pragma"] = "no-cache"
         return response
 
-# Custom filter
-app.jinja_env.filters["usd"] = usd
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()

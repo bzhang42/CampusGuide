@@ -121,6 +121,7 @@ label > input:checked + img{ /* (RADIO CHECKED) IMAGE STYLES */
     width: 100%; /* Width of the outside container */
 }
 
+/* Emoji slider design */
 .slider {
     -webkit-appearance: none;
     width: 50%;
@@ -196,6 +197,7 @@ label > input:checked + img{ /* (RADIO CHECKED) IMAGE STYLES */
     padding: 6px 12px;
 }
 
+/* Meeting the team styllistic page details */
 .team{
     padding:75px 0;
 }
