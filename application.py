@@ -215,7 +215,7 @@ def datingRate(location):
 @login_required
 @check_confirmed
 def location(location_id):
-    """Shows latest location ratings and generates random location"""
+    """Shows location information and ratings"""
 
     # Pulls out information from database
     informations = db.execute(
@@ -236,7 +236,24 @@ def location(location_id):
 
     else:
 
-        return render_template("location.html", information=information)
+        mood = information["mood"]
+
+        if mood == 0:
+            emoji = '<div class="col-sm-4" style="background-color:lavender; color:purple" data-toggle="tooltip" data-placement="bottom" title="Inconclusive"><img class="no-borders" src="/static/pictures/thinking.png" width="7%"></div>'
+        elif mood == 1:
+            emoji = '<div class="col-sm-4" style="background-color:lavender; color:purple" data-toggle="tooltip" data-placement="bottom" title="Happy"><img class="no-borders" src="/static/pictures/happy.png" width="7%"></div>'
+        elif mood == 2:
+            emoji = '<div class="col-sm-4" style="background-color:lavender; color:purple" data-toggle="tooltip" data-placement="bottom" title="Neutral"><img class="no-borders" src="/static/pictures/neutral.png" width="7%"></div>'
+        elif mood == 3:
+            emoji = '<div class="col-sm-4" style="background-color:lavender; color:purple" data-toggle="tooltip" data-placement="bottom" title="Sad"><img class="no-borders" src="/static/pictures/unhappy.png" width="7%"></div>'
+        elif mood == 4:
+            emoji = '<div class="col-sm-4" style="background-color:lavender; color:purple" data-toggle="tooltip" data-placement="bottom" title="Angry"><img class="no-borders" src="/static/pictures/angry_face.png" width="7%"></div>'
+        elif mood == 5:
+            emoji = '<div class="col-sm-4" style="background-color:lavender; color:purple" data-toggle="tooltip" data-placement="bottom" title="Cry"><img class="no-borders" src="/static/pictures/tear.png" width="7%"></div>'
+        else:
+            emoji = '<div class="col-sm-4" style="background-color:lavender; color:purple" data-toggle="tooltip" data-placement="bottom" title="Error"><img class="no-borders" src="/static/pictures/dizzy.png" width="7%"></div>'
+
+        return render_template("location.html", information=information, emoji=emoji)
 
 
 @app.route("/login", methods=["GET", "POST"])
