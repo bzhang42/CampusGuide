@@ -1,0 +1,484 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Discover new locations
+{% endblock %}
+
+{% block main %}
+     <link href="/static/test.css" rel="stylesheet"/>
+
+<div class="jumbotron">
+  <h1>Discover new places around campus</h1>
+  <h3>Alphabetically listed and specific to what you're looking for</h3>
+</div>
+<br>
+<div class="container">
+    <a class="btn btn-primary" title="Discover a random location" href="{{ rand_location }}">Randomize</a>
+</div>
+<br>
+
+
+
+
+
+
+<ul class="list-2">
+      <li class="list-2-item"><a href="#dining/restaurants" class="list-2-anchor">Dining Halls</a></li>
+      <li class="list-2-item"><a href="#dining/restaurants" class="list-2-anchor">Restaurants</a></li>
+      <li class="list-2-item"><a href="#freshman/study" class="list-2-anchor">Freshman</a></li>
+      <li class="list-2-item"><a href="#freshman/study" class="list-2-anchor">Study</a></li>
+      <li class="list-2-item"><a href="#freshman house/athletics" class="list-2-anchor">Freshman House</a></li>
+      <li class="list-2-item"><a href="#freshman house/athletics" class="list-2-anchor">Athletics</a></li>
+      <li class="list-2-item"><a href="#party/date" class="list-2-anchor">Party</a></li>
+      <li class="list-2-item"><a href="#party/date" class="list-2-anchor">Date</a></li>
+      <li class="list-2-item"><a href="#views/sleep" class="list-2-anchor">Views</a></li>
+      <li class="list-2-item"><a href="#views/sleep" class="list-2-anchor">Sleep</a></li>
+      <li class="list-2-item"><a href="#cry/classics" class="list-2-anchor">Cry</a></li>
+      <li class="list-2-item"><a href="#cry/classics" class="list-2-anchor">Classics</a></li>
+      <li class="list-2-item"><a href="#hidden/meeting" class="list-2-anchor">Hidden</a></li>
+      <li class="list-2-item"><a href="#hidden/meeting" class="list-2-anchor">Meeting</a></li>
+      <li class="list-2-item"><a href="#art/music/upperclassmen" class="list-2-anchor">Art/Music</a></li>
+      <li class="list-2-item"><a href="#art/music/upperclassmen" class="list-2-anchor">Upperclassmen</a></li>
+    </ul>
+
+<a class="anchor" name="dining/restaurants"></a>
+<div class = "row">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        <h4>DINING HALLS</h4>
+                    </th>
+                </tr>
+            </thead>
+                <tbody>
+                {% for location in dining %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                         <h4>RESTAURANTS</h4>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in restaurant %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        {#
+                        Fill in table with relevant holdings information
+                        #}
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<a class="anchor" name="freshman/study"></a>
+<div class = "row">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        <h4>FRESHMAN SPOTS</h4>
+                    </th>
+                </tr>
+            </thead>
+                <tbody>
+                {% for location in frosh %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                         <h4>STUDY SPOTS</h4>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in study_spot %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        {#
+                        Fill in table with relevant holdings information
+                        #}
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<a class="anchor" name="freshman house/athletics"></a>
+<div class = "row">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        <h4>FRESHMAN HOUSES</h4>
+                    </th>
+                </tr>
+            </thead>
+                <tbody>
+                {% for location in house %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                         <h4>ATHLETICS</h4>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in athletics %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        {#
+                        Fill in table with relevant holdings information
+                        #}
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<a class="anchor" name="party/date"></a>
+<div class = "row">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        <h4>PARTY SPOTS</h4>
+                    </th>
+                </tr>
+            </thead>
+                <tbody>
+                {% for location in party %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                         <h4>DATE SPOTS</h4>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in date %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        {#
+                        Fill in table with relevant holdings information
+                        #}
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<a class="anchor" name="views/sleep"></a>
+<div class = "row">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        <h4>VIEWS</h4>
+                    </th>
+                </tr>
+            </thead>
+                <tbody>
+                {% for location in view %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                         <h4>SLEEP SPOTS</h4>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in sleep %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        {#
+                        Fill in table with relevant holdings information
+                        #}
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<a class="anchor" name="cry/classics"></a>
+<div class = "row">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        <h4>CRY SPOTS</h4>
+                    </th>
+                </tr>
+            </thead>
+                <tbody>
+                {% for location in cry %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                         <h4>CLASSICS</h4>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in classic %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        {#
+                        Fill in table with relevant holdings information
+                        #}
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<a class="anchor" name="hidden/meeting"></a>
+<div class = "row">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        <h4>HIDDEN SPOTS</h4>
+                    </th>
+                </tr>
+            </thead>
+                <tbody>
+                {% for location in hidden %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                         <h4>MEETING SPOTS</h4>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in meeting %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        {#
+                        Fill in table with relevant holdings information
+                        #}
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<a class="anchor" name="art/music/upperclassmen"></a>
+<div class = "row">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        <h4>ART/MUSIC SPOTS</h4>
+                    </th>
+                </tr>
+            </thead>
+                <tbody>
+                {% for location in art_music %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th colspan="2">
+                         <h4>UPPERCLASSMEN SPOTS</h4>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in upperclass %}
+                {#
+                    Iterates through rows of table
+                #}
+                    <tr>
+                        {#
+                        Fill in table with relevant holdings information
+                        #}
+                        <td>
+                            <a href="{{ location['href'] }}">{{ location["name"] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

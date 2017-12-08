@@ -531,9 +531,59 @@ def information():
 
 @app.route("/discover")
 def discover():
-    # Discover page shows you random location
     discovered = random.randint(1, 372)
-    return redirect("/location/" + str(discovered))
+    rand_location = "/location/" + str(discovered)
+
+    frosh = sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 1"), key=itemgetter("name"))
+
+    study_spot = sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 2"), key=itemgetter("name"))
+
+    dining = sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 3"), key=itemgetter("name"))
+
+    restaurant = sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 4"), key=itemgetter("name"))
+
+    house = sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 5"), key=itemgetter("name"))
+    athletics = sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 6"), key=itemgetter("name"))
+    party = sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 7"), key=itemgetter("name"))
+
+    date = sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 8"), key=itemgetter("name"))
+
+    view= sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 9"), key=itemgetter("name"))
+
+    sleep= sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 10"), key=itemgetter("name"))
+
+    cry= sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 11"), key=itemgetter("name"))
+
+    classic= sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 12"), key=itemgetter("name"))
+
+    hidden= sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 13"), key=itemgetter("name"))
+
+    meeting= sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 14"), key=itemgetter("name"))
+
+    art_music= sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 15"), key=itemgetter("name"))
+
+    upperclass = sorted(db.execute(
+            "SELECT name, href FROM tags INNER JOIN locations ON tags.location_id = locations.id AND tags.label_id = 16"), key=itemgetter("name"))
+
+    return render_template("discover.html", frosh = frosh, study_spot = study_spot, dining = dining, restaurant = restaurant, house = house,
+    athletics = athletics, party = party, date = date, view = view, sleep = sleep, cry = cry, classic = classic, hidden = hidden,
+    meeting = meeting, art_music = art_music, upperclass = upperclass, rand_location = rand_location)
+
 
 
 @app.route("/rate/<r_location_id>", methods=["GET", "POST"])

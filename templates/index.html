@@ -148,9 +148,6 @@
                     Iterates through rows of table
                 #}
                     <tr>
-                        {#
-                        Fill in table with relevant holdings information
-                        #}
                         <td>
                             <a href="{{ location['href'] }}">{{ location["name"] }}</a>
                         </td>
@@ -200,6 +197,7 @@
                         <td>
                             {{ location["misc"] }}
                         </td>
+
                     </tr>
                 {% endfor %}
             </tbody>

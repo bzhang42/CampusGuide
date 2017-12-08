@@ -304,13 +304,18 @@ i.red{
 /* Bootstrap list group class with vertical navbar */
 .list-group{
     width: 350px;
-    height: 330px;
+    height: 345px;
     overflow-y: auto;
       background-color: #ffffff;
       color: white;
  }
 
 .list-group .active {
+  background-color: crimson;
+  border-color: #000000;
+}
+
+.list-group .active b{
   background-color: crimson;
   border-color: #000000;
 }
@@ -340,3 +345,5 @@ i.red{
     width: 40px;
     border-radius: 50%;
 }
+
+
