@@ -4,3 +4,4 @@ Flask-Session
 Flask-Mail
 itsdangerous
 gunicorn
+psycopg2
