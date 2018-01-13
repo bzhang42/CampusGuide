@@ -3,3 +3,4 @@ Flask
 Flask-Session
 Flask-Mail
 itsdangerous
+gunicorn
