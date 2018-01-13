@@ -51,7 +51,7 @@ app.config.update(DEBUG=True,
 mail = Mail(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///campusguide.db")
+db = SQL("postgres://btcefetnvzupgp:545060efc226c0b3a6fa43aad9cd1758e66b59c204628f9aeb773142b8e9bd17@ec2-50-17-203-84.compute-1.amazonaws.com:5432/d36pmqvm7gjdjr")
 
 # Configures part of email url
 ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
@@ -59,6 +59,18 @@ ts = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 # Initializes global varaible for location id
 g_location_id = 0
 
+@app.route("/test")
+def test():
+    users = db.execute("SELECT * FROM users")
+
+    for user in users:
+        user["confirmed"] = db.execute("SELECT COUNT(user_id) FROM ratings WHERE user_id = :user_id", user_id=user["id"])[
+            0]["COUNT(user_id)"]
+
+    users = sorted(users, key=itemgetter("confirmed", "username"), reverse=True)
+    users = users[0:10]
+
+    return render_template("test.html", users=users)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -175,8 +187,19 @@ def index():
         else:
             food = False
 
+        users = db.execute("SELECT * FROM users")
+
+        for user in users:
+            user["confirmed"] = db.execute("SELECT COUNT(user_id) FROM ratings WHERE user_id = :user_id", user_id=user["id"])[
+                0]["COUNT(user_id)"]
+
+        users = sorted(users, key=itemgetter("confirmed", "username"), reverse=True)
+        users = users[0:20]
+
+        recent_ratings = db.execute("SELECT * FROM ratings INNER JOIN users ON ratings.user_id = users.id INNER JOIN locations ON ratings.location_id = locations.id ORDER BY datetime DESC LIMIT 20")
+
         # Passes information to HTML
-        return render_template("index.html", food=food, rand_location=rand_location, dining_info=dining_info, restaurant_info=restaurant_info, housing_info=housing_info, dating_info=dating_info)
+        return render_template("index.html", recent_ratings=recent_ratings, users=users, food=food, rand_location=rand_location, dining_info=dining_info, restaurant_info=restaurant_info, housing_info=housing_info, dating_info=dating_info)
 
 
 def diningRate(location):
