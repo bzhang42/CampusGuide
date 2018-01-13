@@ -1,5 +1,6 @@
 import math
 import random
+import psycopg2
 from datetime import datetime
 from operator import itemgetter, attrgetter, methodcaller
 from statistics import mode, StatisticsError
